@@ -48,7 +48,7 @@ Vector3D GradianColor(const Ray& ray)
 	if (t > 0)
 	{
 		Vector3D N = Normalize(ray.GetPositionFromParameter(t) - Vector3D(0.0f, 0.0f, -1.0f));
-		return (N + Vector3D(1, 1, 1))*0.5f;
+		return Clamp(N, Vector3D(1.0f,1.0f,1.0f), Vector3D(0.0f,0.0f,0.0f));
 	}
 	auto dir = ray.Direction;
 	t = 0.5f * (dir.Y + 1.0f);

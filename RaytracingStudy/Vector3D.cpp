@@ -3,6 +3,8 @@
 #include <cmath>
 #include <iostream>
 
+#include "MathHelper.h"
+
 Vector3D::Vector3D():X(0.0f),Y(0.0f),Z(0.0f)
 {
 }
@@ -114,4 +116,11 @@ Vector3D Cross(const Vector3D a, const Vector3D& b)
 Vector3D Normalize(const Vector3D a)
 {
 	return a / a.Length();
+}
+
+Vector3D Clamp(Vector3D value, const Vector3D& max, const Vector3D& min)
+{
+	return Vector3D(MathHelper::Clamp(value.X,max.X,min.X),
+		MathHelper::Clamp(value.Y, max.Y, min.Y),
+		MathHelper::Clamp(value.Z, max.X, min.Z));
 }
