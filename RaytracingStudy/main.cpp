@@ -2,6 +2,7 @@
 
 #include <DxLib.h>
 
+#include "HitableList.h"
 #include "Sphere.h"
 
 namespace
@@ -42,10 +43,10 @@ float IsHitObject(const Vector3D& sphereCenter, float radius, const Ray& ray)
 		return (-b - sqrt(d)) / (2 * a);
 }
 
-Vector3D Color(const Ray& ray, IHitable* object)
+Vector3D Color(const Ray& ray, IHitable* world)
 {
 	HitRecord record;
-	if (object->CheckHit(ray, 0.0f, 100.0f, record))
+	if (world->CheckHit(ray, 0.0f, 200.0f, record))
 	{
 		return 0.5f*(record.Normal + Vector3D(1.0f,1.0f,1.0f));
 	}
@@ -70,7 +71,10 @@ int main()
 		Vector3D u = { 2.0f,0.0f,0.0f };
 		Vector3D v = { 0.0f,-2.0f,0.0f };
 		Vector3D camPos = { 0.0f,0.0f,0.0f };
-		IHitable* sphere = new Sphere();
+		IHitable* list[2];
+		list[0] = new Sphere();
+		list[1] = new Sphere(Vector3D(0.0f, -100.5f, -1.0f), 100.0f);
+		IHitable* objectList = new HitableList(list, 2);
 		for (int y = screen_height - 1; y >= 0; --y)
 		{
 			for (int x = 0; x < screen_width; ++x)
@@ -78,11 +82,11 @@ int main()
 				float lengthU = static_cast<float>(x) / screen_width;
 				float lengthV = static_cast<float>(y) / screen_height;
 				Ray ray(camPos, screenPos + lengthU * u + lengthV * v );
-				auto color = Color(ray, sphere);
+				auto color = Color(ray, objectList);
 				DrawPixel(x, y, GetColor(255*color.X, 255*color.Y, 255*color.Z));
 			}
 		}
-		delete sphere;
+		delete objectList;
 	}
 
 	DxLib_End();
