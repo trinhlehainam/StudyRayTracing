@@ -2,12 +2,12 @@
 
 #include <DxLib.h>
 
-#include "Ray.h"
+#include "Sphere.h"
 
 namespace
 {
-	constexpr int screen_width = 800;
-	constexpr int screen_height = 800;
+	constexpr int screen_width = 400;
+	constexpr int screen_height = 400;
 	constexpr int color_bits = 32;
 }
 
@@ -42,15 +42,15 @@ float IsHitObject(const Vector3D& sphereCenter, float radius, const Ray& ray)
 		return (-b - sqrt(d)) / (2 * a);
 }
 
-Vector3D GradianColor(const Ray& ray)
+Vector3D Color(const Ray& ray, IHitable* object)
 {
-	float t = IsHitObject(Vector3D(0.0f, 0.0f, -1.0f), 0.5f, ray);
-	if (t > 0)
+	HitRecord record;
+	if (object->CheckHit(ray, 0.0f, 100.0f, record))
 	{
-		Vector3D N = Normalize(ray.GetPositionFromParameter(t) - Vector3D(0.0f, 0.0f, -1.0f));
-		return Clamp(N, Vector3D(1.0f,1.0f,1.0f), Vector3D(0.0f,0.0f,0.0f));
+		return 0.5f*(record.Normal + Vector3D(1.0f,1.0f,1.0f));
 	}
 	auto dir = ray.Direction;
+	float t = record.t;
 	t = 0.5f * (dir.Y + 1.0f);
 	return t * Vector3D(0.0f, 0.0f, 0.0f) + (1.0f - t) * Vector3D(1.0f, 1.0f, 1.0f);
 }
@@ -70,7 +70,7 @@ int main()
 		Vector3D u = { 2.0f,0.0f,0.0f };
 		Vector3D v = { 0.0f,-2.0f,0.0f };
 		Vector3D camPos = { 0.0f,0.0f,0.0f };
-
+		IHitable* sphere = new Sphere();
 		for (int y = screen_height - 1; y >= 0; --y)
 		{
 			for (int x = 0; x < screen_width; ++x)
@@ -78,10 +78,11 @@ int main()
 				float lengthU = static_cast<float>(x) / screen_width;
 				float lengthV = static_cast<float>(y) / screen_height;
 				Ray ray(camPos, screenPos + lengthU * u + lengthV * v );
-				auto color = GradianColor(ray);
+				auto color = Color(ray, sphere);
 				DrawPixel(x, y, GetColor(255*color.X, 255*color.Y, 255*color.Z));
 			}
 		}
+		delete sphere;
 	}
 
 	DxLib_End();
