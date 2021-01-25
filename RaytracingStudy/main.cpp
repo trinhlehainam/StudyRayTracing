@@ -7,7 +7,7 @@
 namespace
 {
 	constexpr int screen_width = 800;
-	constexpr int screen_height = 600;
+	constexpr int screen_height = 800;
 	constexpr int color_bits = 32;
 }
 
@@ -27,8 +27,21 @@ void DrawCaroBackground(int width, int height, int numCaroX, int numCaroY,
 	}
 }
 
+bool IsHitObject(const Vector3D& sphereCenter, float radius, const Ray& ray)
+{
+	// Vector from view to center of sphere
+	Vector3D oc = ray.Origin - sphereCenter;
+	float a = Dot(ray.Direction, ray.Direction);
+	float b = 2 * Dot(ray.Direction, oc);
+	float c = Dot(oc, oc) - radius * radius;
+	float d = b * b - 4 * a * c;
+	return d > 0;
+}
+
 Vector3D GradianColor(const Ray& ray)
 {
+	if (IsHitObject(Vector3D(0.0f, 0.0f, -1.0f), 0.5f, ray))
+		return Vector3D(1.0f, 0.0f, 0.0f);
 	auto dir = ray.Direction;
 	float t = 0.5f * (dir.Y + 1.0f);
 	return t * Vector3D(0.0f, 0.0f, 0.0f) + (1.0f - t) * Vector3D(1.0f, 1.0f, 1.0f);
