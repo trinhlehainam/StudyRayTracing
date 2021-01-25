@@ -27,7 +27,7 @@ void DrawCaroBackground(int width, int height, int numCaroX, int numCaroY,
 	}
 }
 
-bool IsHitObject(const Vector3D& sphereCenter, float radius, const Ray& ray)
+float IsHitObject(const Vector3D& sphereCenter, float radius, const Ray& ray)
 {
 	// Vector from view to center of sphere
 	Vector3D oc = ray.Origin - sphereCenter;
@@ -35,15 +35,23 @@ bool IsHitObject(const Vector3D& sphereCenter, float radius, const Ray& ray)
 	float b = 2 * Dot(ray.Direction, oc);
 	float c = Dot(oc, oc) - radius * radius;
 	float d = b * b - 4 * a * c;
-	return d > 0;
+		
+	if (d < 0)
+		return -1;
+	else
+		return (-b - sqrt(d)) / (2 * a);
 }
 
 Vector3D GradianColor(const Ray& ray)
 {
-	if (IsHitObject(Vector3D(0.0f, 0.0f, -1.0f), 0.5f, ray))
-		return Vector3D(1.0f, 0.0f, 0.0f);
+	float t = IsHitObject(Vector3D(0.0f, 0.0f, -1.0f), 0.5f, ray);
+	if (t > 0)
+	{
+		Vector3D N = Normalize(ray.GetPositionFromParameter(t) - Vector3D(0.0f, 0.0f, -1.0f));
+		return (N + Vector3D(1, 1, 1))*0.5f;
+	}
 	auto dir = ray.Direction;
-	float t = 0.5f * (dir.Y + 1.0f);
+	t = 0.5f * (dir.Y + 1.0f);
 	return t * Vector3D(0.0f, 0.0f, 0.0f) + (1.0f - t) * Vector3D(1.0f, 1.0f, 1.0f);
 }
 
