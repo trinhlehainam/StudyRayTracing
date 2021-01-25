@@ -25,14 +25,11 @@ bool HitableList::CheckHit(const Ray& ray, float minRange, float maxRange, HitRe
     float closestRange = maxRange;
     for (unsigned int i = 0; i < Count; ++i)
     {
-        if (List[i]->CheckHit(ray, minRange, maxRange, tempRect))
+        if (List[i]->CheckHit(ray, minRange, closestRange, tempRect))
         {
             check = true;
-            if (tempRect.t < closestRange)
-            {
-                closestRange = tempRect.t;
-                record = tempRect;
-            }
+            closestRange = tempRect.t;
+            record = tempRect;
         }
     }
     return check;
