@@ -1,5 +1,5 @@
 #pragma once
-#include "Ray.h"
+#include "Common/Ray.h"
 
 struct HitRecord
 {

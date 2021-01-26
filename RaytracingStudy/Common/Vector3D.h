@@ -25,6 +25,7 @@ struct Vector3D
 };
 
 Vector3D operator + (const Vector3D& a, const Vector3D& b);
+Vector3D operator + (const Vector3D& a, float scalar);
 Vector3D operator - (const Vector3D& a, const Vector3D& b);
 Vector3D operator * (const Vector3D& a, float scalar);
 Vector3D operator / (const Vector3D& a, float scalar);

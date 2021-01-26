@@ -1,6 +1,6 @@
 #pragma once
 #include "IHitable.h"
-#include "Ray.h"
+#include "Common/Ray.h"
 
 class Sphere : public IHitable
 {

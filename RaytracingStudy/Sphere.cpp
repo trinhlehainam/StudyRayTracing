@@ -23,17 +23,17 @@ bool Sphere::CheckHit(const Ray& ray, float minRange, float maxRange, HitRecord&
 	if (d < 0) return false;
 
 	float sqrt = std::sqrt(d);
-	float root = (-b - std::sqrt(d)) / 2 * a;
+	float root = (-b - sqrt) / (2 * a);
 	if (root < minRange || root > maxRange)
 	{
-		root = (-b + std::sqrt(d)) / 2 * a;
+		root = (-b + sqrt) / (2 * a);
 		if (root < minRange || root > maxRange)
 			return false;
 	}
 
 	record.t = root;
 	record.Position = ray.GetPositionFromParameter(root);
-	Vector3D outwardNormal = (ray.GetPositionFromParameter(root) - Center) / Radius;
+	Vector3D outwardNormal = (record.Position - Center) / Radius;
 	record.SetFaceNormal(ray, outwardNormal);
 	
     return true;

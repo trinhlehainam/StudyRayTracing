@@ -3,11 +3,11 @@
 
 #include <DxLib.h>
 
-#include "MathHelper.h"
+#include "Common/MathHelper.h"
+#include "Common/Camera.h"
 #include "HitableList.h"
 #include "HitRecord.h"
 #include "Sphere.h"
-#include "Camera.h"
 
 namespace
 {
@@ -37,7 +37,7 @@ Vector3D RandomPositionInUnitSphere()
 	return RandomVector(1.0f,-1.0f);
 }
 
-Vector3D WriteColor(const Ray& ray, std::shared_ptr<IHitable> world, int depth)
+Vector3D Color(const Ray& ray, IHitable* world, int depth)
 {
 	// Guard infinite ray bouncing
 	if (depth <= 0)
@@ -47,7 +47,7 @@ Vector3D WriteColor(const Ray& ray, std::shared_ptr<IHitable> world, int depth)
 	if (world->CheckHit(ray, 0.0f, MathHelper::INFINITY_FLOAT, record))
 	{
 		Vector3D target = record.Position + record.Normal + RandomPositionInUnitSphere();
-		return 0.5f * WriteColor(Ray(record.Position, target - record.Position),world, depth - 1);
+		return 0.5f * Color(Ray(record.Position, target - record.Position), world, depth - 1);
 	}
 
 	auto dir = ray.Direction;
@@ -65,8 +65,6 @@ int main()
 
 	while (!ProcessMessage())
 	{
-		DrawCaroBackground(screen_width, screen_height, 5, 5, GetColor(255, 255, 255), GetColor(255, 0, 0));
-
 		Camera camera;
 		std::shared_ptr<HitableList> List = std::make_shared<HitableList>();
 		List->List.push_back(std::make_shared<Sphere>());
@@ -87,7 +85,7 @@ int main()
 				//}
 				//color /= 5;
 
-				color += WriteColor(camera.GetRayAtScreenUV(lengthU, lengthV), List, max_depth);
+				color += Color(camera.GetRayAtScreenUV(lengthU, lengthV), List.get(), max_depth);
 				
 				DrawPixel(x, y, GetColor(255*color.X, 255*color.Y, 255*color.Z));
 			}

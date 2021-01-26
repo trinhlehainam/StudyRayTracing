@@ -10,5 +10,5 @@ Ray::Ray(const Vector3D& origin, const Vector3D& direction):Origin(origin), Dire
 
 Vector3D Ray::GetPositionFromParameter(float t) const
 {
-	return Origin + Direction * t;
+	return Origin + t * Direction;
 }

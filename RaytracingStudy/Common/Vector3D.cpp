@@ -78,6 +78,11 @@ Vector3D operator+(const Vector3D& a, const Vector3D& b)
 	return Vector3D(a.X + b.X, a.Y + b.Y, a.Z + b.Z);
 }
 
+Vector3D operator+(const Vector3D& a, float scalar)
+{
+	return a + Vector3D(scalar, scalar, scalar);
+}
+
 Vector3D operator-(const Vector3D& a, const Vector3D& b)
 {
 	return Vector3D(a.X - b.X, a.Y - b.Y, a.Z - b.Z);
@@ -90,17 +95,17 @@ Vector3D operator*(const Vector3D& a, float scalar)
 
 Vector3D operator/(const Vector3D& a, float scalar)
 {
-	return Vector3D(a.X/scalar, a.Y / scalar, a.Z / scalar);
+	return a * (1.0f / scalar);
 }
 
 Vector3D operator*(float scalar, const Vector3D& a)
 {
-	return Vector3D(a.X * scalar, a.Y * scalar, a.Z * scalar);
+	return a * scalar;
 }
 
 Vector3D operator/(float scalar, const Vector3D& a)
 {
-	return Vector3D(a.X / scalar, a.Y / scalar, a.Z / scalar);
+	return a / scalar;
 }
 
 Vector3D operator-(const Vector3D& a)
@@ -110,7 +115,7 @@ Vector3D operator-(const Vector3D& a)
 
 float Dot(const Vector3D& a, const Vector3D& b)
 {
-	return a.X*b.X + a.Y * b.Y + a.Z * b.Z;
+	return a.X * b.X + a.Y * b.Y + a.Z * b.Z;
 }
 
 Vector3D Cross(const Vector3D a, const Vector3D& b)
