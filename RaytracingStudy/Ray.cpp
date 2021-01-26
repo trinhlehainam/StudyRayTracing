@@ -4,7 +4,7 @@ Ray::Ray()
 {
 }
 
-Ray::Ray(const Vector3D& origin, const Vector3D& point):Origin(origin), Direction(point - origin)
+Ray::Ray(const Vector3D& origin, const Vector3D& direction):Origin(origin), Direction(direction)
 {
 }
 

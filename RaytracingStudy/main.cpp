@@ -32,22 +32,22 @@ void DrawCaroBackground(int width, int height, int numCaroX, int numCaroY,
 
 Vector3D RandomPositionInUnitSphere()
 {
-	Vector3D p;
-	do
-	{
-		p = RandomVector(-1.0f,1.0f);
-	} while (Dot(p, p) >= 1);
-	return p;
+	return RandomVector(1.0f,-1.0f);
 }
 
-Vector3D Color(const Ray& ray, IHitable* world)
+Vector3D WriteColor(const Ray& ray, IHitable* world, int depth)
 {
+	// Guard infinite ray bouncing
+	if (depth <= 0)
+		return Vector3D(0.0f, 0.0f, 0.0f);
+
 	HitRecord record;
 	if (world->CheckHit(ray, 0.0f, MathHelper::INFINITY_FLOAT, record))
 	{
 		Vector3D target = record.Position + record.Normal + RandomPositionInUnitSphere();
-		return 0.5f* Color(Ray(record.Position, target),world);
+		return 0.5f * WriteColor(Ray(record.Position, target - record.Position),world, depth - 1);
 	}
+
 	auto dir = ray.Direction;
 	float t = record.t;
 	t = 0.5f * (dir.Y + 1.0f);
@@ -70,19 +70,23 @@ int main()
 		list[0] = new Sphere();
 		list[1] = new Sphere(Vector3D(0.0f, -100.5f, -1.0f), 100.0f);
 		IHitable* objectList = new HitableList(list, 2);
+		const int max_depth = 50; // number of ray bouncing
 		for (int y = 0; y < screen_height; ++y)
 		{
 			for (int x = 0; x < screen_width; ++x)
 			{
 				Vector3D color;
+				float lengthU = static_cast<float>(x) / screen_width;
 				float lengthV = static_cast<float>(y) / screen_height;
-				for (int s = -2; s < 3; ++s)
-				{
-					int clamp = MathHelper::Clamp(s + x, 0, screen_width);
-					float lengthU = static_cast<float>(clamp) / screen_width;
-					color += Color(camera.GetRayAtScreenUV(lengthU, lengthV), objectList);
-				}
-				color /= 5;
+				//for (int s = -2; s < 3; ++s)
+				//{
+				//	int clamp = MathHelper::Clamp(s + x, 0, screen_width);
+				//	float lengthU = static_cast<float>(clamp) / screen_width;
+				//	color += WriteColor(camera.GetRayAtScreenUV(lengthU, lengthV), objectList, depth);
+				//}
+				//color /= 5;
+
+				color += WriteColor(camera.GetRayAtScreenUV(lengthU, lengthV), objectList, max_depth);
 				
 				DrawPixel(x, y, GetColor(255*color.X, 255*color.Y, 255*color.Z));
 			}
