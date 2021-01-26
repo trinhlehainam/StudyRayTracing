@@ -34,7 +34,10 @@ void DrawCaroBackground(int width, int height, int numCaroX, int numCaroY,
 
 Vector3D RandomPositionInUnitSphere()
 {
-	return RandomVector(1.0f,-1.0f);
+	Vector3D v;
+	while (Dot(v, v) >= 1)
+		v = RandomVector(-1.0f, 1.0f);
+	return v;
 }
 
 Vector3D Color(const Ray& ray, IHitable* world, int depth)
@@ -69,24 +72,16 @@ int main()
 		std::shared_ptr<HitableList> List = std::make_shared<HitableList>();
 		List->List.push_back(std::make_shared<Sphere>());
 		List->List.push_back(std::make_shared<Sphere>(Vector3D(0.0f, -100.5f, -1.0f), 100.0f));
-		const int max_depth = 50; // number of ray bouncing
+		const int max_depth = 10; // number of ray bouncing
 		for (int y = 0; y < screen_height; ++y)
 		{
 			for (int x = 0; x < screen_width; ++x)
 			{
 				Vector3D color;
-				float lengthU = static_cast<float>(x) / screen_width;
 				float lengthV = static_cast<float>(y) / screen_height;
-				//for (int s = -2; s < 3; ++s)
-				//{
-				//	int clamp = MathHelper::Clamp(s + x, 0, screen_width);
-				//	float lengthU = static_cast<float>(clamp) / screen_width;
-				//	color += WriteColor(camera.GetRayAtScreenUV(lengthU, lengthV), objectList, depth);
-				//}
-				//color /= 5;
+				float lengthU = static_cast<float>(x) / screen_width;
+				color = Color(camera.GetRayAtScreenUV(lengthU, lengthV), List.get(), max_depth);
 
-				color += Color(camera.GetRayAtScreenUV(lengthU, lengthV), List.get(), max_depth);
-				
 				DrawPixel(x, y, GetColor(255*color.X, 255*color.Y, 255*color.Z));
 			}
 		}
