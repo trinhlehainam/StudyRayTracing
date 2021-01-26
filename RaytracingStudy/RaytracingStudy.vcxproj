@@ -21,6 +21,7 @@
   <ItemGroup>
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="HitableList.cpp" />
+    <ClCompile Include="HitRecord.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="MathHelper.cpp" />
     <ClCompile Include="Ray.cpp" />
@@ -30,6 +31,7 @@
   <ItemGroup>
     <ClInclude Include="Camera.h" />
     <ClInclude Include="HitableList.h" />
+    <ClInclude Include="HitRecord.h" />
     <ClInclude Include="IHitable.h" />
     <ClInclude Include="MathHelper.h" />
     <ClInclude Include="Ray.h" />

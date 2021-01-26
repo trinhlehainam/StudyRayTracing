@@ -30,6 +30,7 @@ Vector3D operator * (const Vector3D& a, float scalar);
 Vector3D operator / (const Vector3D& a, float scalar);
 Vector3D operator * (float scalar, const Vector3D& a);
 Vector3D operator / (float scalar, const Vector3D& a);
+Vector3D operator - (const Vector3D& a);
 
 float Dot(const Vector3D& a, const Vector3D& b);
 Vector3D Cross(const Vector3D a, const Vector3D& b);

@@ -103,6 +103,11 @@ Vector3D operator/(float scalar, const Vector3D& a)
 	return Vector3D(a.X / scalar, a.Y / scalar, a.Z / scalar);
 }
 
+Vector3D operator-(const Vector3D& a)
+{
+	return -1.0f*a;
+}
+
 float Dot(const Vector3D& a, const Vector3D& b)
 {
 	return a.X*b.X + a.Y * b.Y + a.Z * b.Z;
