@@ -15,9 +15,9 @@ namespace MathHelper
 	}
 
 	template<typename T>
-	T Clamp(T value, T max, T min)
+	T Clamp(T value, T min, T max)
 	{
-		return Max(min, Min(value, max));
+		return Min(max, Max(value, min));
 	}
 }
 

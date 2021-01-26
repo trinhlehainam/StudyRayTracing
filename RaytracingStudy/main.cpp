@@ -2,6 +2,7 @@
 
 #include <DxLib.h>
 
+#include "MathHelper.h"
 #include "HitableList.h"
 #include "Sphere.h"
 #include "Camera.h"
@@ -54,7 +55,7 @@ Vector3D Color(const Ray& ray, IHitable* world)
 	auto dir = ray.Direction;
 	float t = record.t;
 	t = 0.5f * (dir.Y + 1.0f);
-	return t * Vector3D(0.0f, 0.0f, 0.0f) + (1.0f - t) * Vector3D(1.0f, 1.0f, 1.0f);
+	return (1.0f - t) * Vector3D(1.0f, 1.0f, 1.0f) + t * Vector3D(0.0f, 1.0f, 1.0f);
 }
 
 int main()
@@ -77,9 +78,16 @@ int main()
 		{
 			for (int x = 0; x < screen_width; ++x)
 			{
-				float lengthU = static_cast<float>(x) / screen_width;
+				Vector3D color;
 				float lengthV = static_cast<float>(y) / screen_height;
-				auto color = Color(camera.GetRayAtScreenUV(lengthU, lengthV), objectList);
+				for (int s = -2; s < 3; ++s)
+				{
+					int clamp = MathHelper::Clamp(s + x, 0, screen_width);
+					float lengthU = static_cast<float>(clamp) / screen_width;
+					color += Color(camera.GetRayAtScreenUV(lengthU, lengthV), objectList);
+				}
+				color /= 5;
+				
 				DrawPixel(x, y, GetColor(255*color.X, 255*color.Y, 255*color.Z));
 			}
 		}

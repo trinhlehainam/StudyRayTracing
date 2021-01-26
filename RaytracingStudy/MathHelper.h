@@ -9,7 +9,7 @@ namespace MathHelper
 	T Min(T a, T b);
 
 	template <typename T>
-	T Clamp(T value, T max, T min);
+	T Clamp(T value, T min, T max);
 }
 
 
