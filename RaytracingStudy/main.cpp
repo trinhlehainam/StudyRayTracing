@@ -4,6 +4,7 @@
 
 #include "HitableList.h"
 #include "Sphere.h"
+#include "Camera.h"
 
 namespace
 {
@@ -15,9 +16,9 @@ namespace
 void DrawCaroBackground(int width, int height, int numCaroX, int numCaroY,
 	unsigned int color1, unsigned int color2)
 {
-	for (int y = height - 1; y >= 0; --y)
+	for (int y = 0; y < screen_height; ++y)
 	{
-		for (int x = 0; x < width; ++x)
+		for (int x = 0; x < screen_width; ++x)
 		{
 			int checkCaro = y / (height / numCaroX) % 2 != 0 ? 1 : 0;
 			if (x / (width / numCaroY) % 2 == checkCaro)
@@ -67,22 +68,18 @@ int main()
 	{
 		DrawCaroBackground(screen_width, screen_height, 5, 5, GetColor(255, 255, 255), GetColor(255, 0, 0));
 
-		Vector3D screenPos = { -1.0f,1.0f,-1.0f };
-		Vector3D u = { 2.0f,0.0f,0.0f };
-		Vector3D v = { 0.0f,-2.0f,0.0f };
-		Vector3D camPos = { 0.0f,0.0f,0.0f };
+		Camera camera;
 		IHitable* list[2];
 		list[0] = new Sphere();
 		list[1] = new Sphere(Vector3D(0.0f, -100.5f, -1.0f), 100.0f);
 		IHitable* objectList = new HitableList(list, 2);
-		for (int y = screen_height - 1; y >= 0; --y)
+		for (int y = 0; y < screen_height; ++y)
 		{
 			for (int x = 0; x < screen_width; ++x)
 			{
 				float lengthU = static_cast<float>(x) / screen_width;
 				float lengthV = static_cast<float>(y) / screen_height;
-				Ray ray(camPos, screenPos + lengthU * u + lengthV * v );
-				auto color = Color(ray, objectList);
+				auto color = Color(camera.GetRayAtScreenUV(lengthU, lengthV), objectList);
 				DrawPixel(x, y, GetColor(255*color.X, 255*color.Y, 255*color.Z));
 			}
 		}
