@@ -1,5 +1,7 @@
 #include "MathHelper.h"
 
+#include <cmath>
+
 namespace MathHelper
 {
 	template<typename T>
@@ -19,6 +21,18 @@ namespace MathHelper
 	{
 		return Min(max, Max(value, min));
 	}
+
+	template<typename T>
+	T Random()
+	{
+		return static_cast<T>(rand())/static_cast<T>(RAND_MAX);
+	}
+	template<typename T>
+
+	T Random(T min, T max)
+	{
+		return min + (max - min) * Random<T>();
+	}
 }
 
 
@@ -35,4 +49,13 @@ namespace MathHelper
 	template int Clamp(int, int, int);
 	template float Clamp(float, float, float);
 	template double Clamp(double, double, double);
+
+	template int Random();
+	template float Random();
+	template double Random();
+
+	template int Random(int, int);
+	template float Random(float, float);
+	template double Random(double, double);
+
 }

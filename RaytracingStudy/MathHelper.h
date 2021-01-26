@@ -10,6 +10,12 @@ namespace MathHelper
 
 	template <typename T>
 	T Clamp(T value, T min, T max);
+
+	template <typename T>
+	T Random();
+
+	template <typename T>
+	T Random(T min, T max);
 }
 
 

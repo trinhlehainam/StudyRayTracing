@@ -30,19 +30,17 @@ void DrawCaroBackground(int width, int height, int numCaroX, int numCaroY,
 	}
 }
 
-float IsHitObject(const Vector3D& sphereCenter, float radius, const Ray& ray)
+Vector3D RandomPositionInUnitSphere()
 {
-	// Vector from view to center of sphere
-	Vector3D oc = ray.Origin - sphereCenter;
-	float a = Dot(ray.Direction, ray.Direction);
-	float b = 2 * Dot(ray.Direction, oc);
-	float c = Dot(oc, oc) - radius * radius;
-	float d = b * b - 4 * a * c;
-		
-	if (d < 0)
-		return -1;
-	else
-		return (-b - sqrt(d)) / (2 * a);
+	Vector3D p;
+	do
+	{
+		float x = MathHelper::Random(-1.0f,1.0f);
+		float y = MathHelper::Random(-1.0f,1.0f);
+		float z = MathHelper::Random(-1.0f,1.0f);
+		p = Vector3D(x, y, z);
+	} while (Dot(p, p) >= 1);
+	return p;
 }
 
 Vector3D Color(const Ray& ray, IHitable* world)
@@ -50,7 +48,8 @@ Vector3D Color(const Ray& ray, IHitable* world)
 	HitRecord record;
 	if (world->CheckHit(ray, 0.0f, 200.0f, record))
 	{
-		return 0.5f*(record.Normal + Vector3D(1.0f,1.0f,1.0f));
+		Vector3D target = record.Position + record.Normal + RandomPositionInUnitSphere();
+		return 0.5f* Color(Ray(record.Position, target),world);
 	}
 	auto dir = ray.Direction;
 	float t = record.t;
