@@ -124,3 +124,10 @@ Vector3D Clamp(Vector3D value, const Vector3D& max, const Vector3D& min)
 		MathHelper::Clamp(value.Y, max.Y, min.Y),
 		MathHelper::Clamp(value.Z, max.X, min.Z));
 }
+
+Vector3D RandomVector(float min, float max)
+{
+	return Vector3D(MathHelper::Random(min,max),
+		MathHelper::Random(min, max),
+		MathHelper::Random(min, max));
+}

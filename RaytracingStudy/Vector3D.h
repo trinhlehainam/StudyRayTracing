@@ -35,4 +35,5 @@ float Dot(const Vector3D& a, const Vector3D& b);
 Vector3D Cross(const Vector3D a, const Vector3D& b);
 Vector3D Normalize(const Vector3D a);
 Vector3D Clamp(Vector3D value, const Vector3D& max, const Vector3D& min);
+Vector3D RandomVector(float min, float max);
 

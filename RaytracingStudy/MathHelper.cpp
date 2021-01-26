@@ -1,6 +1,12 @@
 #include "MathHelper.h"
 
 #include <cmath>
+#include <limits>
+
+namespace MathHelper
+{
+	const float INFINITY_FLOAT = std::numeric_limits<float>::infinity();
+}
 
 namespace MathHelper
 {

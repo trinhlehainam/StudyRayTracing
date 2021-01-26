@@ -16,6 +16,9 @@ namespace MathHelper
 
 	template <typename T>
 	T Random(T min, T max);
+
+	extern const float INFINITY_FLOAT;
 }
+
 
 

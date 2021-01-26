@@ -35,10 +35,7 @@ Vector3D RandomPositionInUnitSphere()
 	Vector3D p;
 	do
 	{
-		float x = MathHelper::Random(-1.0f,1.0f);
-		float y = MathHelper::Random(-1.0f,1.0f);
-		float z = MathHelper::Random(-1.0f,1.0f);
-		p = Vector3D(x, y, z);
+		p = RandomVector(-1.0f,1.0f);
 	} while (Dot(p, p) >= 1);
 	return p;
 }
@@ -46,7 +43,7 @@ Vector3D RandomPositionInUnitSphere()
 Vector3D Color(const Ray& ray, IHitable* world)
 {
 	HitRecord record;
-	if (world->CheckHit(ray, 0.0f, 200.0f, record))
+	if (world->CheckHit(ray, 0.0f, MathHelper::INFINITY_FLOAT, record))
 	{
 		Vector3D target = record.Position + record.Normal + RandomPositionInUnitSphere();
 		return 0.5f* Color(Ray(record.Position, target),world);
