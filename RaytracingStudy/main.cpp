@@ -73,7 +73,7 @@ int main()
 {
 	ChangeWindowMode(true);
 	SetGraphMode(screen_width, screen_height, color_bits);
-	SetMainWindowText(_T("ŠÈˆÕ”Å‚ÌƒŒƒCƒgƒŒ‚Å‚Á‚¹"));
+	SetMainWindowText(_T("Study Ray tracing"));
 	DxLib_Init();
 
 	while (!ProcessMessage())
