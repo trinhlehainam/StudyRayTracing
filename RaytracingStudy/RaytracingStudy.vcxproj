@@ -22,9 +22,11 @@
     <ClCompile Include="Common\Camera.cpp" />
     <ClCompile Include="HitableList.cpp" />
     <ClCompile Include="HitRecord.cpp" />
+    <ClCompile Include="Lambertian.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Common\MathHelper.cpp" />
     <ClCompile Include="Common\Ray.cpp" />
+    <ClCompile Include="Material.cpp" />
     <ClCompile Include="Sphere.cpp" />
     <ClCompile Include="Common\Vector3D.cpp" />
   </ItemGroup>
@@ -35,6 +37,8 @@
     <ClInclude Include="IHitable.h" />
     <ClInclude Include="Common\MathHelper.h" />
     <ClInclude Include="Common\Ray.h" />
+    <ClInclude Include="Lambertian.h" />
+    <ClInclude Include="Material.h" />
     <ClInclude Include="Sphere.h" />
     <ClInclude Include="Common\Vector3D.h" />
   </ItemGroup>

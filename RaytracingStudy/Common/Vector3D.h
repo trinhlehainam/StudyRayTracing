@@ -23,6 +23,8 @@ struct Vector3D
 
 	void Pow(float scalar);
 
+	bool IsNearZero() const;
+
 	float X, Y, Z;
 };
 
@@ -33,6 +35,7 @@ Vector3D operator * (const Vector3D& a, float scalar);
 Vector3D operator / (const Vector3D& a, float scalar);
 Vector3D operator * (float scalar, const Vector3D& a);
 Vector3D operator / (float scalar, const Vector3D& a);
+Vector3D operator * (const Vector3D& a, const Vector3D& b);
 Vector3D operator - (const Vector3D& a);
 
 float Dot(const Vector3D& a, const Vector3D& b);
@@ -45,6 +48,7 @@ Vector3D RandomPositionInUnitSphere();
 Vector3D RandomUnitVector();
 // Generate random position that facing the same side with normal
 Vector3D RandomPositionInHemisphere(const Vector3D& normal);
+Vector3D ReflectedVector(const Vector3D& i, const Vector3D& n);
 
 using Position3 = Vector3D;
 using Color3 = Vector3D;

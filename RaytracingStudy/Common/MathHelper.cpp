@@ -6,6 +6,8 @@
 namespace MathHelper
 {
 	const float INFINITY_FLOAT = std::numeric_limits<float>::infinity();
+	template <> const float MAX_VALUE<float> = std::numeric_limits<float>::max();
+	template <> const float MIN_VALUE<float> = std::numeric_limits<float>::min();
 }
 
 namespace MathHelper
@@ -39,6 +41,7 @@ namespace MathHelper
 	{
 		return min + (max - min) * Random<T>();
 	}
+
 }
 
 

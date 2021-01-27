@@ -8,6 +8,7 @@
 #include "HitableList.h"
 #include "HitRecord.h"
 #include "Sphere.h"
+#include "Lambertian.h"
 
 namespace
 {
@@ -41,8 +42,11 @@ Vector3D RayColor(const Ray& ray, IHitable* world, int depth)
 	HitRecord record;
 	if (world->IsHit(ray, 0.001f, MathHelper::INFINITY_FLOAT, record))
 	{
-		Vector3D target = record.Position + record.Normal + RandomUnitVector();
-		return 0.5f * RayColor(Ray(record.Position, target - record.Position), world, depth - 1);
+		Ray scatteredRay;
+		Vector3D attenuation;
+		if (record.pMaterial->ScatterRay(ray, record, attenuation, scatteredRay))
+			return attenuation * RayColor(scatteredRay, world, depth - 1);
+		return Vector3D(0.0f, 0.0f, 0.0f);
 	}
 
 	auto dir = ray.Direction;
@@ -70,8 +74,10 @@ int main()
 	{
 		Camera camera;
 		std::shared_ptr<HitableList> List = std::make_shared<HitableList>();
-		List->List.push_back(std::make_shared<Sphere>());
-		List->List.push_back(std::make_shared<Sphere>(Vector3D(0.0f, -100.5f, -1.0f), 100.0f));
+		std::vector<std::shared_ptr<Material>> materials;
+		materials.push_back(std::make_shared<Lambertian>(Vector3D(0.5f, 0.5f, 0.5f)));
+		List->List.push_back(std::make_shared<Sphere>(materials[0]));
+		List->List.push_back(std::make_shared<Sphere>(Vector3D(0.0f, -100.5f, -1.0f), 100.0f, materials[0]));
 		const int max_depth = 10; // number of ray bouncing
 		const int sample_per_pixel = 10;
 		for (int y = 0; y < screen_height; ++y)

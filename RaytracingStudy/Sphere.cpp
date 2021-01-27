@@ -4,11 +4,13 @@
 
 #include "HitRecord.h"
 
-Sphere::Sphere():Center(0.0f,0.0,-1.0f),Radius(0.5f)
+Sphere::Sphere(const std::shared_ptr<Material>& material):
+	Center(0.0f,0.0,-1.0f),Radius(0.5f), pMaterial(material)
 {
 }
 
-Sphere::Sphere(const Vector3D& center, float radius):Center(center),Radius(radius)
+Sphere::Sphere(const Vector3D& center, float radius, const std::shared_ptr<Material>& material):
+	Center(center),Radius(radius), pMaterial(material)
 {
 }
 
@@ -35,6 +37,7 @@ bool Sphere::IsHit(const Ray& ray, float minRange, float maxRange, HitRecord& re
 	record.Position = ray.GetPositionFromParameter(root);
 	Vector3D outwardNormal = (record.Position - Center) / Radius;
 	record.SetFaceNormal(ray, outwardNormal);
+	record.pMaterial = pMaterial;
 	
     return true;
 }
