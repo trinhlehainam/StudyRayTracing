@@ -168,3 +168,9 @@ Vector3D RandomUnitVector()
 {
 	return Normalize(RandomVector(-1,1));
 }
+
+Vector3D RandomPositionInHemisphere(const Vector3D& normal)
+{
+	Vector3D pos = RandomVector(-1.0f, 1.0f);
+	return Dot(pos,normal) > 0 ? pos : -pos;
+}

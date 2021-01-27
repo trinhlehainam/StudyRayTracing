@@ -43,6 +43,8 @@ Vector3D RandomVector(float min, float max);
 Vector3D Pow(const Vector3D& a, float scalar);
 Vector3D RandomPositionInUnitSphere();
 Vector3D RandomUnitVector();
+// Generate random position that facing the same side with normal
+Vector3D RandomPositionInHemisphere(const Vector3D& normal);
 
 using Position3 = Vector3D;
 using Color3 = Vector3D;
