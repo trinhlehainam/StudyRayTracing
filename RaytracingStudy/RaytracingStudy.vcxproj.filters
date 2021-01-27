@@ -39,10 +39,10 @@
     <ClCompile Include="Common\Vector3D.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Material.cpp">
+    <ClCompile Include="Lambertian.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Lambertian.cpp">
+    <ClCompile Include="Metal.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -75,6 +75,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Lambertian.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Metal.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

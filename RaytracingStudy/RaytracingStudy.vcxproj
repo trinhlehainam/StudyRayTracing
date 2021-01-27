@@ -26,7 +26,7 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Common\MathHelper.cpp" />
     <ClCompile Include="Common\Ray.cpp" />
-    <ClCompile Include="Material.cpp" />
+    <ClCompile Include="Metal.cpp" />
     <ClCompile Include="Sphere.cpp" />
     <ClCompile Include="Common\Vector3D.cpp" />
   </ItemGroup>
@@ -39,6 +39,7 @@
     <ClInclude Include="Common\Ray.h" />
     <ClInclude Include="Lambertian.h" />
     <ClInclude Include="Material.h" />
+    <ClInclude Include="Metal.h" />
     <ClInclude Include="Sphere.h" />
     <ClInclude Include="Common\Vector3D.h" />
   </ItemGroup>

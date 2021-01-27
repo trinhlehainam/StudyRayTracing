@@ -9,6 +9,7 @@
 #include "HitRecord.h"
 #include "Sphere.h"
 #include "Lambertian.h"
+#include "Metal.h"
 
 namespace
 {
@@ -46,7 +47,7 @@ Vector3D RayColor(const Ray& ray, IHitable* world, int depth)
 		Vector3D attenuation;
 		if (record.pMaterial->ScatterRay(ray, record, attenuation, scatteredRay))
 			return attenuation * RayColor(scatteredRay, world, depth - 1);
-		return Vector3D(0.0f, 0.0f, 0.0f);
+		return attenuation;
 	}
 
 	auto dir = ray.Direction;
@@ -73,13 +74,21 @@ int main()
 	while (!ProcessMessage())
 	{
 		Camera camera;
-		std::shared_ptr<HitableList> List = std::make_shared<HitableList>();
-		std::vector<std::shared_ptr<Material>> materials;
-		materials.push_back(std::make_shared<Lambertian>(Vector3D(0.5f, 0.5f, 0.5f)));
-		List->List.push_back(std::make_shared<Sphere>(materials[0]));
-		List->List.push_back(std::make_shared<Sphere>(Vector3D(0.0f, -100.5f, -1.0f), 100.0f, materials[0]));
 		const int max_depth = 10; // number of ray bouncing
 		const int sample_per_pixel = 10;
+
+		std::vector<std::shared_ptr<Material>> materials;
+		materials.push_back(std::make_shared<Lambertian>(Vector3D(0.8f, 0.8f, 0.0f)));
+		materials.push_back(std::make_shared<Lambertian>(Vector3D(0.7f, 0.3f, 0.3f)));
+		materials.push_back(std::make_shared<Metal>(Vector3D(0.8f, 0.8f, 0.8f)));
+		materials.push_back(std::make_shared<Metal>(Vector3D(0.8f, 0.6f, 0.2f)));
+		
+		std::shared_ptr<HitableList> List = std::make_shared<HitableList>();
+		List->List.push_back(std::make_shared<Sphere>(materials[1]));
+		List->List.push_back(std::make_shared<Sphere>(Vector3D(-1.0f, 0.0f, -1.0f), 0.5f, materials[2]));
+		List->List.push_back(std::make_shared<Sphere>(Vector3D(1.0f, 0.0f, -1.0f), 0.5f, materials[3]));
+		List->List.push_back(std::make_shared<Sphere>(Vector3D(0.0f, -100.5f, -1.0f), 100.0f, materials[0]));
+		
 		for (int y = 0; y < screen_height; ++y)
 		{
 			for (int x = 0; x < screen_width; ++x)
