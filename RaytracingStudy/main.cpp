@@ -80,8 +80,8 @@ int main()
 		std::vector<std::shared_ptr<Material>> materials;
 		materials.push_back(std::make_shared<Lambertian>(Vector3D(0.8f, 0.8f, 0.0f)));
 		materials.push_back(std::make_shared<Lambertian>(Vector3D(0.7f, 0.3f, 0.3f)));
-		materials.push_back(std::make_shared<Metal>(Vector3D(0.8f, 0.8f, 0.8f)));
-		materials.push_back(std::make_shared<Metal>(Vector3D(0.8f, 0.6f, 0.2f)));
+		materials.push_back(std::make_shared<Metal>(Vector3D(0.8f, 0.8f, 0.8f),0.3f));
+		materials.push_back(std::make_shared<Metal>(Vector3D(0.8f, 0.6f, 0.2f),1.0f));
 		
 		std::shared_ptr<HitableList> List = std::make_shared<HitableList>();
 		List->List.push_back(std::make_shared<Sphere>(materials[1]));
