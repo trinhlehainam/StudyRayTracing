@@ -49,7 +49,7 @@ Vector3D RayColor(const Ray& ray, IHitable* world, int depth)
 		return Vector3D(0.0f, 0.0f, 0.0f);
 
 	HitRecord record;
-	if (world->CheckHit(ray, 0.0f, MathHelper::INFINITY_FLOAT, record))
+	if (world->CheckHit(ray, 0.001f, MathHelper::INFINITY_FLOAT, record))
 	{
 		Vector3D target = record.Position + record.Normal + RandomPositionInUnitSphere();
 		return 0.5f * RayColor(Ray(record.Position, target - record.Position), world, depth - 1);
