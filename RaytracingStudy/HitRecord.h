@@ -6,12 +6,12 @@
 
 struct HitRecord
 {
-	void SetFaceNormal(const Ray& ray, const Vector3D& outwardNomarl);
-
-	float t;
 	Vector3D Position;
 	Vector3D Normal;
+	float t;
 	bool FrontFace;
 	std::shared_ptr<Material> pMaterial;
+
+	void SetFaceNormal(const Ray& ray, const Vector3D& outwardNomarl);
 };
 

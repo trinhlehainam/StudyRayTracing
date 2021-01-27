@@ -1,7 +1,6 @@
 #include "Vector3D.h"
 
 #include <cmath>
-#include <iostream>
 
 #include "MathHelper.h"
 
@@ -15,6 +14,15 @@ Vector3D::Vector3D(float x, float y, float z):X(x),Y(y),Z(z)
 
 Vector3D::Vector3D(const Vector3D& other):X(other.X),Y(other.Y),Z(other.Z)
 {
+}
+
+Vector3D& Vector3D::operator=(const Vector3D& other)
+{
+	X = other.X;
+	Y = other.Y;
+	Z = other.Z;
+
+	return *this;
 }
 
 Vector3D& Vector3D::operator +=(const Vector3D& other)
@@ -61,11 +69,6 @@ Vector3D& Vector3D::Normalized()
 float Vector3D::Length() const
 {
 	return std::sqrtf(X * X + Y * Y + Z * Z);
-}
-
-void Vector3D::Print() const
-{
-	std::cout << "(" << X << ", " << Y << ", " << Z << ")" << "\n";
 }
 
 void Vector3D::Pow(float scalar)
@@ -124,7 +127,7 @@ Vector3D operator/(float scalar, const Vector3D& a)
 
 Vector3D operator*(const Vector3D& a, const Vector3D& b)
 {
-	return Vector3D(a.X * b.X, a.Y * b.Y, a.Z * b.Y);
+	return Vector3D(a.X * b.X, a.Y * b.Y, a.Z * b.Z);
 }
 
 Vector3D operator-(const Vector3D& a)
