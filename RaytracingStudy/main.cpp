@@ -35,8 +35,10 @@ void DrawCaroBackground(int width, int height, int numCaroX, int numCaroY,
 Vector3D RandomPositionInUnitSphere()
 {
 	Vector3D v;
-	while (Dot(v, v) >= 1)
+	do
 		v = RandomVector(-1.0f, 1.0f);
+	while (Dot(v, v) >= 1);
+		
 	return v;
 }
 
@@ -57,6 +59,14 @@ Vector3D Color(const Ray& ray, IHitable* world, int depth)
 	float t = record.t;
 	t = 0.5f * (dir.Y + 1.0f);
 	return (1.0f - t) * Vector3D(1.0f, 1.0f, 1.0f) + t * Vector3D(0.0f, 1.0f, 1.0f);
+}
+
+unsigned int GetColor(const Vector3D& hdrColor)
+{
+	int r = MathHelper::Clamp<int>(255 * hdrColor.X, 0, 255);
+	int g = MathHelper::Clamp<int>(255 * hdrColor.Y, 0, 255);
+	int b = MathHelper::Clamp<int>(255 * hdrColor.Z, 0, 255);
+	return DxLib::GetColor(r, g, b);
 }
 
 int main()
@@ -82,7 +92,7 @@ int main()
 				float lengthU = static_cast<float>(x) / screen_width;
 				color = Color(camera.GetRayAtScreenUV(lengthU, lengthV), List.get(), max_depth);
 
-				DrawPixel(x, y, GetColor(255*color.X, 255*color.Y, 255*color.Z));
+				DrawPixel(x, y, GetColor(color));
 			}
 		}
 	}

@@ -39,3 +39,6 @@ Vector3D Normalize(const Vector3D a);
 Vector3D Clamp(Vector3D value, const Vector3D& max, const Vector3D& min);
 Vector3D RandomVector(float min, float max);
 
+using Position3 = Vector3D;
+using Color3 = Vector3D;
+
