@@ -58,7 +58,7 @@ Vector3D RayColor(const Ray& ray, IHitable* world, int depth)
 	auto dir = ray.Direction;
 	float t = record.t;
 	t = 0.5f * (dir.Y + 1.0f);
-	return (1.0f - t) * Vector3D(1.0f, 1.0f, 1.0f) + t * Vector3D(0.0f, 1.0f, 1.0f);
+	return (1.0f - t) * Vector3D(1.0f, 1.0f, 1.0f) + t * Vector3D(0.5f, 0.7f, 1.0f);
 }
 
 unsigned int GetColor(const Vector3D& hdrColor)
@@ -89,6 +89,7 @@ int main()
 			for (int x = 0; x < screen_width; ++x)
 			{
 				Vector3D color;
+				// Sampling per pixel
 				for (int s = 0; s < sample_per_pixel; ++s)
 				{
 					float lengthU = static_cast<float>(x + MathHelper::Random<float>()) / (screen_width - 1);
@@ -96,8 +97,11 @@ int main()
 				
 					color += RayColor(camera.GetRayAtScreenUV(lengthU, lengthV), List.get(), max_depth);
 				}
-				
 				color /= sample_per_pixel;
+
+				// Gamma correction
+				// Power color by 1/2 -> mean square root of it
+				color.Pow(0.5f);
 
 				DrawPixel(x, y, GetColor(color));
 			}

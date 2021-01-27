@@ -21,6 +21,8 @@ struct Vector3D
 
 	void Print() const;
 
+	void Pow(float scalar);
+
 	float X, Y, Z;
 };
 
@@ -38,6 +40,7 @@ Vector3D Cross(const Vector3D a, const Vector3D& b);
 Vector3D Normalize(const Vector3D a);
 Vector3D Clamp(Vector3D value, const Vector3D& max, const Vector3D& min);
 Vector3D RandomVector(float min, float max);
+Vector3D Pow(const Vector3D& a, float scalar);
 
 using Position3 = Vector3D;
 using Color3 = Vector3D;

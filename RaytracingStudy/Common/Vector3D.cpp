@@ -68,6 +68,13 @@ void Vector3D::Print() const
 	std::cout << "(" << X << ", " << Y << ", " << Z << ")" << "\n";
 }
 
+void Vector3D::Pow(float scalar)
+{
+	X = powf(X, scalar);
+	Y = powf(Y, scalar);
+	Z = powf(Z, scalar);
+}
+
 Vector3D Vector3D::Normalize() const
 {
 	return *this / Length();
@@ -140,4 +147,9 @@ Vector3D RandomVector(float min, float max)
 	return Vector3D(MathHelper::Random(min,max),
 		MathHelper::Random(min, max),
 		MathHelper::Random(min, max));
+}
+
+Vector3D Pow(const Vector3D& a, float scalar)
+{
+	return Vector3D(powf(a.X,scalar), powf(a.Y, scalar), powf(a.Z, scalar));
 }
