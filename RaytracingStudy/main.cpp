@@ -32,16 +32,6 @@ void DrawCaroBackground(int width, int height, int numCaroX, int numCaroY,
 	}
 }
 
-Vector3D RandomPositionInUnitSphere()
-{
-	Vector3D v;
-	do
-		v = RandomVector(-1.0f, 1.0f);
-	while (Dot(v, v) >= 1);
-		
-	return v;
-}
-
 Vector3D RayColor(const Ray& ray, IHitable* world, int depth)
 {
 	// Guard infinite ray bouncing
@@ -51,7 +41,7 @@ Vector3D RayColor(const Ray& ray, IHitable* world, int depth)
 	HitRecord record;
 	if (world->IsHit(ray, 0.001f, MathHelper::INFINITY_FLOAT, record))
 	{
-		Vector3D target = record.Position + record.Normal + RandomPositionInUnitSphere();
+		Vector3D target = record.Position + record.Normal + RandomUnitVector();
 		return 0.5f * RayColor(Ray(record.Position, target - record.Position), world, depth - 1);
 	}
 

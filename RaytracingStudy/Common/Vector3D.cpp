@@ -153,3 +153,18 @@ Vector3D Pow(const Vector3D& a, float scalar)
 {
 	return Vector3D(powf(a.X,scalar), powf(a.Y, scalar), powf(a.Z, scalar));
 }
+
+Vector3D RandomPositionInUnitSphere()
+{
+	Vector3D v;
+	do
+		v = RandomVector(-1.0f, 1.0f);
+	while (Dot(v, v) >= 1);
+
+	return v;
+}
+
+Vector3D RandomUnitVector()
+{
+	return Normalize(RandomVector(-1,1));
+}

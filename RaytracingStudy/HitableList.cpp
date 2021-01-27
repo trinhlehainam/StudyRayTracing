@@ -16,7 +16,7 @@ bool HitableList::IsHit(const Ray& ray, float minRange, float maxRange, HitRecor
     float closestRange = maxRange;
     for (auto& hitable : List)
     {
-        if (hitable->CheckHit(ray, minRange, closestRange, tempRect))
+        if (hitable->IsHit(ray, minRange, closestRange, tempRect))
         {
             check = true;
             closestRange = tempRect.t;
