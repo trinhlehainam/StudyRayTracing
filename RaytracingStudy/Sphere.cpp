@@ -12,7 +12,7 @@ Sphere::Sphere(const Vector3D& center, float radius):Center(center),Radius(radiu
 {
 }
 
-bool Sphere::CheckHit(const Ray& ray, float minRange, float maxRange, HitRecord& record) const
+bool Sphere::IsHit(const Ray& ray, float minRange, float maxRange, HitRecord& record) const
 {
 	Vector3D oc = ray.Origin - Center;
 	float a = Dot(ray.Direction, ray.Direction);

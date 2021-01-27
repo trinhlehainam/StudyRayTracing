@@ -9,7 +9,7 @@ HitableList::~HitableList()
 {
 }
 
-bool HitableList::CheckHit(const Ray& ray, float minRange, float maxRange, HitRecord& record) const
+bool HitableList::IsHit(const Ray& ray, float minRange, float maxRange, HitRecord& record) const
 {
     HitRecord tempRect;
     bool check = false;
