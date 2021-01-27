@@ -42,7 +42,7 @@ Vector3D RandomPositionInUnitSphere()
 	return v;
 }
 
-Vector3D Color(const Ray& ray, IHitable* world, int depth)
+Vector3D RayColor(const Ray& ray, IHitable* world, int depth)
 {
 	// Guard infinite ray bouncing
 	if (depth <= 0)
@@ -52,7 +52,7 @@ Vector3D Color(const Ray& ray, IHitable* world, int depth)
 	if (world->CheckHit(ray, 0.0f, MathHelper::INFINITY_FLOAT, record))
 	{
 		Vector3D target = record.Position + record.Normal + RandomPositionInUnitSphere();
-		return 0.5f * Color(Ray(record.Position, target - record.Position), world, depth - 1);
+		return 0.5f * RayColor(Ray(record.Position, target - record.Position), world, depth - 1);
 	}
 
 	auto dir = ray.Direction;
@@ -63,9 +63,9 @@ Vector3D Color(const Ray& ray, IHitable* world, int depth)
 
 unsigned int GetColor(const Vector3D& hdrColor)
 {
-	int r = MathHelper::Clamp<int>(255 * hdrColor.X, 0, 255);
-	int g = MathHelper::Clamp<int>(255 * hdrColor.Y, 0, 255);
-	int b = MathHelper::Clamp<int>(255 * hdrColor.Z, 0, 255);
+	int r = 255 * MathHelper::Clamp(hdrColor.X, 0.0f, 1.0f);
+	int g = 255 * MathHelper::Clamp(hdrColor.Y, 0.0f, 1.0f);
+	int b = 255 * MathHelper::Clamp(hdrColor.Z, 0.0f, 1.0f);
 	return DxLib::GetColor(r, g, b);
 }
 
@@ -83,14 +83,21 @@ int main()
 		List->List.push_back(std::make_shared<Sphere>());
 		List->List.push_back(std::make_shared<Sphere>(Vector3D(0.0f, -100.5f, -1.0f), 100.0f));
 		const int max_depth = 10; // number of ray bouncing
+		const int sample_per_pixel = 10;
 		for (int y = 0; y < screen_height; ++y)
 		{
 			for (int x = 0; x < screen_width; ++x)
 			{
 				Vector3D color;
-				float lengthV = static_cast<float>(y) / screen_height;
-				float lengthU = static_cast<float>(x) / screen_width;
-				color = Color(camera.GetRayAtScreenUV(lengthU, lengthV), List.get(), max_depth);
+				for (int s = 0; s < sample_per_pixel; ++s)
+				{
+					float lengthU = static_cast<float>(x + MathHelper::Random<float>()) / (screen_width - 1);
+					float lengthV = static_cast<float>(y + MathHelper::Random<float>()) / (screen_height - 1);
+				
+					color += RayColor(camera.GetRayAtScreenUV(lengthU, lengthV), List.get(), max_depth);
+				}
+				
+				color /= sample_per_pixel;
 
 				DrawPixel(x, y, GetColor(color));
 			}
