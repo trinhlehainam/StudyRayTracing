@@ -35,8 +35,7 @@ bool Sphere::IsHit(const Ray& ray, float minRange, float maxRange, HitRecord& re
 
 	record.t = root;
 	record.Position = ray.GetPositionFromParameter(root);
-	Vector3D outwardNormal = (record.Position - Center) / Radius;
-	record.SetFaceNormal(ray, outwardNormal);
+	record.SetFaceNormal(ray, (record.Position - Center) / Radius);
 	record.pMaterial = pMaterial;
 	
     return true;

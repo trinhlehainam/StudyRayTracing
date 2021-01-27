@@ -77,9 +77,9 @@ void Vector3D::Pow(float scalar)
 
 bool Vector3D::IsNearZero() const
 {
-	return fabsf(X) <= MathHelper::MIN_VALUE<float> &&
-		fabsf(Y) <= MathHelper::MIN_VALUE<float> &&
-		fabsf(Z) <= MathHelper::MIN_VALUE<float>;
+	return fabsf(X) < MathHelper::MIN_VALUE<float> &&
+		fabsf(Y) < MathHelper::MIN_VALUE<float> &&
+		fabsf(Z) < MathHelper::MIN_VALUE<float>;
 }
 
 Vector3D Vector3D::Normalize() const
@@ -189,5 +189,5 @@ Vector3D RandomPositionInHemisphere(const Vector3D& normal)
 
 Vector3D ReflectedVector(const Vector3D& i, const Vector3D& n)
 {
-	return i - 2 * Dot(i, n) * n;
+	return i - 2.0f * Dot(i, n) * n;
 }

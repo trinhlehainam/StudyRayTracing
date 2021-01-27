@@ -9,7 +9,7 @@ class Metal :
 public:
     explicit Metal(const Vector3D& albedo, float fuzziness);
 
-    virtual bool ScatterRay(const Ray& rayIn, const HitRecord& record, Vector3D& attenuation, Ray& rayScatter) const override;
+    virtual bool ScatterRay(const Ray& inRay, const HitRecord& record, Vector3D& attenuation, Ray& scatteredRay) const override;
 
 public:
     Vector3D Albedo;

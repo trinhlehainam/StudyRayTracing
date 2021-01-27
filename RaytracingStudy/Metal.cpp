@@ -8,11 +8,11 @@ Metal::Metal(const Vector3D& albedo, float fuzziness):Albedo(albedo), Fuzziness(
 {
 }
 
-bool Metal::ScatterRay(const Ray& rayIn, const HitRecord& record, Vector3D& attenuation, Ray& rayScatter) const
+bool Metal::ScatterRay(const Ray& inRay, const HitRecord& record, Vector3D& attenuation, Ray& scatteredRay) const
 {
     attenuation = Albedo;
-    rayScatter.Origin = record.Position;
-    rayScatter.Direction = ReflectedVector(rayIn.Direction, record.Normal) + Fuzziness * RandomUnitVector();
+    scatteredRay.Origin = record.Position;
+    scatteredRay.Direction = ReflectedVector(inRay.Direction, record.Normal) + Fuzziness * RandomUnitVector();
 
-    return Dot(rayScatter.Direction, record.Normal) > 0;
+    return Dot(scatteredRay.Direction, record.Normal) > 0;
 }

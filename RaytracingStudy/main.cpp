@@ -58,9 +58,9 @@ Vector3D RayColor(const Ray& ray, IHitable* world, int depth)
 
 unsigned int GetColor(const Vector3D& hdrColor)
 {
-	int r = 255 * MathHelper::Clamp(hdrColor.X, 0.0f, 1.0f);
-	int g = 255 * MathHelper::Clamp(hdrColor.Y, 0.0f, 1.0f);
-	int b = 255 * MathHelper::Clamp(hdrColor.Z, 0.0f, 1.0f);
+	int r = static_cast<int>(255.0f * MathHelper::Clamp(hdrColor.X, 0.0f, 1.0f));
+	int g = static_cast<int>(255.0f * MathHelper::Clamp(hdrColor.Y, 0.0f, 1.0f));
+	int b = static_cast<int>(255.0f * MathHelper::Clamp(hdrColor.Z, 0.0f, 1.0f));
 	return DxLib::GetColor(r, g, b);
 }
 
@@ -80,14 +80,14 @@ int main()
 		std::vector<std::shared_ptr<Material>> materials;
 		materials.push_back(std::make_shared<Lambertian>(Vector3D(0.8f, 0.8f, 0.0f)));
 		materials.push_back(std::make_shared<Lambertian>(Vector3D(0.7f, 0.3f, 0.3f)));
-		materials.push_back(std::make_shared<Metal>(Vector3D(0.8f, 0.8f, 0.8f),0.3f));
-		materials.push_back(std::make_shared<Metal>(Vector3D(0.8f, 0.6f, 0.2f),1.0f));
+		materials.push_back(std::make_shared<Metal>(Vector3D(0.8f, 0.8f, 0.8f),0.0f));
+		materials.push_back(std::make_shared<Metal>(Vector3D(0.8f, 0.6f, 0.2f),0.0f));
 		
 		std::shared_ptr<HitableList> List = std::make_shared<HitableList>();
+		List->List.push_back(std::make_shared<Sphere>(Vector3D(0.0f, -100.5f, -1.0f), 100.0f, materials[0]));
 		List->List.push_back(std::make_shared<Sphere>(materials[1]));
 		List->List.push_back(std::make_shared<Sphere>(Vector3D(-1.0f, 0.0f, -1.0f), 0.5f, materials[2]));
 		List->List.push_back(std::make_shared<Sphere>(Vector3D(1.0f, 0.0f, -1.0f), 0.5f, materials[3]));
-		List->List.push_back(std::make_shared<Sphere>(Vector3D(0.0f, -100.5f, -1.0f), 100.0f, materials[0]));
 		
 		for (int y = 0; y < screen_height; ++y)
 		{

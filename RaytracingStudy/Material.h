@@ -9,7 +9,7 @@ class Material
 public:
 	virtual ~Material() {};
 
-	virtual bool ScatterRay(const Ray& rayIn, const HitRecord& record, Vector3D& attenuation, Ray& rayScatter) const = 0;
+	virtual bool ScatterRay(const Ray& inRay, const HitRecord& record, Vector3D& attenuation, Ray& scatteredRay) const = 0;
 
 };
 
