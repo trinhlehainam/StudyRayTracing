@@ -87,7 +87,7 @@ int main()
 		
 		std::shared_ptr<HitableList> List = std::make_shared<HitableList>();
 		List->List.push_back(std::make_shared<Sphere>(Vector3D(0.0f, -100.5f, -1.0f), 100.0f, materials[0]));
-		List->List.push_back(std::make_shared<Sphere>(materials[4]));
+		List->List.push_back(std::make_shared<Sphere>(Vector3D(0.0f, 0.0f, -1.0f), -0.4f, materials[4]));
 		List->List.push_back(std::make_shared<Sphere>(Vector3D(-1.0f, 0.0f, -1.0f), 0.5f, materials[2]));
 		List->List.push_back(std::make_shared<Sphere>(Vector3D(1.0f, 0.0f, -1.0f), 0.5f, materials[3]));
 		
