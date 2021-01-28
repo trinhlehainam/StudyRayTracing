@@ -36,23 +36,23 @@ void DrawCaroBackground(int width, int height, int numCaroX, int numCaroY,
 	}
 }
 
-Vector3D RayColor(const Ray& ray, IHitable* world, int depth)
+Vector3D RayColor(const Ray& ray, const HitableList& world, int numRayBounce)
 {
 	// Guard infinite ray bouncing
-	if (depth <= 0)
+	if (numRayBounce <= 0)
 		return Vector3D(0.0f, 0.0f, 0.0f);
 
 	HitRecord record;
-	if (world->IsHit(ray, 0.001f, MathHelper::INFINITY_FLOAT, record))
+	if (world.IsHit(ray, 0.001f, MathHelper::INFINITY_FLOAT, record))
 	{
 		Ray scatteredRay;
 		Vector3D attenuation;
 		if (record.pMaterial->ScatterRay(ray, record, attenuation, scatteredRay))
-			return attenuation * RayColor(scatteredRay, world, depth - 1);
+			return attenuation * RayColor(scatteredRay, world, numRayBounce - 1);
 		return attenuation;
 	}
 
-	auto dir = ray.Direction;
+	auto dir = Normalize(ray.Direction);
 	float t = record.t;
 	t = 0.5f * (dir.Y + 1.0f);
 	return (1.0f - t) * Vector3D(1.0f, 1.0f, 1.0f) + t * Vector3D(0.5f, 0.7f, 1.0f);
@@ -66,46 +66,81 @@ unsigned int GetColor(const Vector3D& hdrColor)
 	return DxLib::GetColor(r, g, b);
 }
 
+HitableList RandomScene()
+{
+	HitableList world;
+	auto ground_material = std::make_shared<Lambertian>(Color3(0.5f, 0.5f, 0.5f));
+	world.List.push_back(std::make_shared<Sphere>(Position3(0.0f, -1000.0f, 0.0f), 1000.0f, ground_material));
+	
+	for (int a = -6; a < 6; ++a) {
+		for (int b = -6; b < 6; ++b) {
+			auto choose_mat = MathHelper::Random<float>();
+			Position3 center(a + 0.9f * MathHelper::Random<float>(), 0.2f, b + 0.9f * MathHelper::Random<float>());
+			if ((center - Position3(4.0f, 0.2f, 0.0f)).Length() > 0.9f) {
+				std::shared_ptr<IMaterial> sphere_material;
+				if (choose_mat < 0.8f) {
+					// diffuse
+					auto albedo = RandomVector(0.0f,1.0f) * RandomVector(0.0f, 1.0f);
+					sphere_material = std::make_shared<Lambertian>(albedo);
+					world.List.push_back(std::make_shared<Sphere>(center, 0.2f, sphere_material));
+				}
+				else if (choose_mat < 0.95) {
+					// metal
+					auto albedo = RandomVector(0.5f, 1.0f);
+					auto fuzz = MathHelper::Random<float>(0.0f, 0.5f);
+					sphere_material = std::make_shared<Metal>(albedo, fuzz);
+					world.List.push_back(std::make_shared<Sphere>(center, 0.2f, sphere_material));
+				}
+				else {
+					// glass
+					sphere_material = std::make_shared<Dielectrics>(1.5f);
+					world.List.push_back(std::make_shared<Sphere>(center, 0.2f, sphere_material));
+				}
+			}
+		}
+	}
+
+	auto material1 = std::make_shared<Dielectrics>(1.5f);
+	world.List.push_back(std::make_shared<Sphere>(Position3(0.0f, 1.0f, 0.0f), 1.0f, material1));
+	auto material2 = std::make_shared<Lambertian>(Color3(0.4f, 0.2f, 0.1f));
+	world.List.push_back(std::make_shared<Sphere>(Position3(-4.0f, 1.0f, 0.0f), 1.0f, material2));
+	auto material3 = std::make_shared<Metal>(Color3(0.7f, 0.6f, 0.5f), 0.0f);
+	world.List.push_back(std::make_shared<Sphere>(Position3(4.0f, 1.0f, 0.0f), 1.0f, material3));
+	return world;
+}
+
+
 int main()
 {
 	ChangeWindowMode(true);
 	SetGraphMode(screen_width, screen_height, color_bits);
-	SetMainWindowText(_T("Study Ray tracing"));
+	SetMainWindowText(_T("Cyberpunk 2077 REEL PARFORMANZ :)"));
 	DxLib_Init();
+
+	const Position3 look_from(13.0f, 2.0f, 3.0f);
+	const Position3 look_at(0.0f, 0.0f, 0.0f);
+	const Vector3D up(0.0f, 1.0f, 0.0f);
+	constexpr float focus_distance = 10.0f;
+	constexpr float aperture = 0.1f;
+
+	constexpr int max_bounce = 10;								// number of ray bouncing
+	constexpr int sample_per_pixel = 100;
+
+	HitableList World = RandomScene();
 
 	while (!ProcessMessage())
 	{
 		const float FPS = GetFPS();
 
-		Position3 look_from(3.0f, 2.0f, 2.0f);
-		Position3 look_at(0.0f, 0.0f, -1.0f);
-		Vector3D up(0.0f, 1.0f, 0.0f);
-		float focus_distance = (look_at - look_from).Length();
 		Camera camera(
-			look_from,							// Look From
-			look_at,							// Look At
-			up,							// Vector up
-			20.0f,												// Field of view
+			look_from,
+			look_at,
+			up,
+			20.0f,
 			aspect_ratio,
-			2.0f,
-			focus_distance);	// Aspect Ratio
+			aperture,
+			focus_distance);
 
-		const int max_depth = 10;								// number of ray bouncing
-		const int sample_per_pixel = 10;
-
-		std::vector<std::shared_ptr<IMaterial>> materials;
-		materials.push_back(std::make_shared<Lambertian>(Vector3D(0.8f, 0.8f, 0.0f)));
-		materials.push_back(std::make_shared<Lambertian>(Vector3D(0.7f, 0.3f, 0.3f)));
-		materials.push_back(std::make_shared<Metal>(Vector3D(0.8f, 0.8f, 0.8f),0.3f));
-		materials.push_back(std::make_shared<Metal>(Vector3D(0.8f, 0.6f, 0.2f),0.5f));
-		materials.push_back(std::make_shared<Dielectrics>(1.5f));
-		
-		std::shared_ptr<HitableList> List = std::make_shared<HitableList>();
-		List->List.push_back(std::make_shared<Sphere>(Vector3D(0.0f, -100.5f, -1.0f), 100.0f, materials[0]));
-		List->List.push_back(std::make_shared<Sphere>(Vector3D(0.0f, 0.0f, -1.0f), -0.4f, materials[4]));
-		List->List.push_back(std::make_shared<Sphere>(Vector3D(-1.0f, 0.0f, -1.0f), 0.5f, materials[2]));
-		List->List.push_back(std::make_shared<Sphere>(Vector3D(1.0f, 0.0f, -1.0f), 0.5f, materials[3]));
-		
 		for (int y = 0; y < screen_height; ++y)
 		{
 			for (int x = 0; x < screen_width; ++x)
@@ -117,7 +152,7 @@ int main()
 					float lengthU = static_cast<float>(x + MathHelper::Random<float>()) / (screen_width - 1);
 					float lengthV = static_cast<float>(y + MathHelper::Random<float>()) / (screen_height - 1);
 				
-					color += RayColor(camera.GetRayAtScreenUV(lengthU, lengthV), List.get(), max_depth);
+					color += RayColor(camera.GetRayAtScreenUV(lengthU, lengthV), World, max_bounce);
 				}
 				color /= sample_per_pixel;
 
