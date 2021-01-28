@@ -6,10 +6,10 @@
 
 struct HitRecord
 {
-	Vector3D Position;
+	Vector3D Position;		// Hit position
 	Vector3D Normal;
-	float t;
-	bool FrontFace;
+	float t;				// Variable to calculate the position from a ray
+	bool FrontFace;			// checking the ray is bouncing from outside or insdie of object
 	std::shared_ptr<Material> pMaterial;
 
 	void SetFaceNormal(const Ray& ray, const Vector3D& outwardNomarl);
