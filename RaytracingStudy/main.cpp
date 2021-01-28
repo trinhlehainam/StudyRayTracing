@@ -75,12 +75,20 @@ int main()
 
 	while (!ProcessMessage())
 	{
+		const float FPS = GetFPS();
+
+		Position3 look_from(3.0f, 2.0f, 2.0f);
+		Position3 look_at(0.0f, 0.0f, -1.0f);
+		Vector3D up(0.0f, 1.0f, 0.0f);
+		float focus_distance = (look_at - look_from).Length();
 		Camera camera(
-			Position3(-2.0f,2.0f,1.0f),							// Look From
-			Position3(0.0f,0.0f,-1.0f),							// Look At
-			Vector3D(0.0f,1.0f,0.0f),							// Vector up
-			45.0f,												// Field of view
-			aspect_ratio);	// Aspect Ratio
+			look_from,							// Look From
+			look_at,							// Look At
+			up,							// Vector up
+			20.0f,												// Field of view
+			aspect_ratio,
+			2.0f,
+			focus_distance);	// Aspect Ratio
 
 		const int max_depth = 10;								// number of ray bouncing
 		const int sample_per_pixel = 10;
@@ -120,6 +128,7 @@ int main()
 				DrawPixel(x, y, GetColor(color));
 			}
 		}
+		DxLib::DrawFormatString(10, 10, DxLib::GetColor(0, 0, 0), L"FPS : %f", FPS);
 	}
 
 	DxLib_End();

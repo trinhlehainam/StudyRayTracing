@@ -189,6 +189,17 @@ Vector3D RandomUnitVector()
 	return Normalize(RandomVector(-1,1));
 }
 
+Vector3D RandomPositionInUnitCircle()
+{
+	Vector3D p(MathHelper::Random<float>(-1.0, 1.0f), MathHelper::Random<float>(-1.0, 1.0f), 0.0f);
+	while (Dot(p, p) >= 1.0f)
+	{
+		p.X = MathHelper::Random<float>(-1.0, 1.0f);
+		p.Y = MathHelper::Random<float>(-1.0, 1.0f);
+	}
+	return p;
+}
+
 Vector3D RandomPositionInHemisphere(const Vector3D& normal)
 {
 	Vector3D pos = RandomVector(-1.0f, 1.0f);
