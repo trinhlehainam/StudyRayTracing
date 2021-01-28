@@ -5,6 +5,7 @@ class Camera
 {
 public:
 	Camera();
+	explicit Camera(float FOV, float aspectRatio);
 
 	Ray GetRayAtScreenUV(float u, float v) const;
 

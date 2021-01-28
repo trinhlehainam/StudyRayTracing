@@ -14,8 +14,8 @@
 
 namespace
 {
-	constexpr int screen_width = 400;
-	constexpr int screen_height = 400;
+	constexpr int screen_width = 800;
+	constexpr int screen_height = 600;
 	constexpr int color_bits = 32;
 }
 
@@ -74,7 +74,7 @@ int main()
 
 	while (!ProcessMessage())
 	{
-		Camera camera;
+		Camera camera(90.0f, static_cast<float>(screen_width)/screen_height);
 		const int max_depth = 10; // number of ray bouncing
 		const int sample_per_pixel = 10;
 

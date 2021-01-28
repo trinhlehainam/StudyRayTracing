@@ -17,7 +17,13 @@ namespace MathHelper
 	template <typename T>
 	T Random(T min, T max);
 
+	template <typename T>
+	T DegreeToRadian(T degrees);
+
 	extern const float INFINITY_FLOAT;
+
+	template <typename T> 
+	extern const T PI;
 
 	template <typename T>
 	extern const T MAX_VALUE;

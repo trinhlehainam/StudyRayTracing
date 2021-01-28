@@ -6,6 +6,8 @@
 namespace MathHelper
 {
 	const float INFINITY_FLOAT = std::numeric_limits<float>::infinity();
+	template<> const float PI<float> = 3.14159265358979323846f;
+	template<> const double PI<double> = 3.14159265358979323846;
 	template <> const float MAX_VALUE<float> = std::numeric_limits<float>::max();
 	template <> const float MIN_VALUE<float> = std::numeric_limits<float>::min();
 }
@@ -42,6 +44,12 @@ namespace MathHelper
 		return min + (max - min) * Random<T>();
 	}
 
+	template<typename T>
+	T DegreeToRadian(T degrees)
+	{
+		return static_cast<T>(degrees * PI<T>/180);
+	}
+
 }
 
 
@@ -67,4 +75,6 @@ namespace MathHelper
 	template float Random(float, float);
 	template double Random(double, double);
 
+	template float DegreeToRadian(float);
+	template double DegreeToRadian(double);
 }
