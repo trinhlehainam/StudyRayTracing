@@ -5,13 +5,13 @@ class Camera
 {
 public:
 	Camera();
-	explicit Camera(float FOV, float aspectRatio);
+	explicit Camera(Position3 lookFrom, Position3 lookAt, Vector3D vectorUp, float FOV, float aspectRatio);
 
 	Ray GetRayAtScreenUV(float u, float v) const;
 
-	Vector3D ViewBase;
-	Vector3D BaseU;
-	Vector3D BaseV;
-	Vector3D Position;
+	Position3 Position;
+	Position3 ViewPosition;
+	Vector3D ViewU;
+	Vector3D ViewV;
 };
 

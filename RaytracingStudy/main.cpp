@@ -17,6 +17,7 @@ namespace
 	constexpr int screen_width = 800;
 	constexpr int screen_height = 600;
 	constexpr int color_bits = 32;
+	constexpr float aspect_ratio = static_cast<float>(screen_width) / screen_height;
 }
 
 void DrawCaroBackground(int width, int height, int numCaroX, int numCaroY,
@@ -74,8 +75,14 @@ int main()
 
 	while (!ProcessMessage())
 	{
-		Camera camera(90.0f, static_cast<float>(screen_width)/screen_height);
-		const int max_depth = 10; // number of ray bouncing
+		Camera camera(
+			Position3(-2.0f,2.0f,1.0f),							// Look From
+			Position3(0.0f,0.0f,-1.0f),							// Look At
+			Vector3D(0.0f,1.0f,0.0f),							// Vector up
+			45.0f,												// Field of view
+			aspect_ratio);	// Aspect Ratio
+
+		const int max_depth = 10;								// number of ray bouncing
 		const int sample_per_pixel = 10;
 
 		std::vector<std::shared_ptr<IMaterial>> materials;
