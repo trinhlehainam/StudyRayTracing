@@ -8,9 +8,9 @@
 #include "HitableList.h"
 #include "HitRecord.h"
 #include "Sphere.h"
-#include "Lambertian.h"
-#include "Metal.h"
-#include "Dielectrics.h"
+#include "Materials/Lambertian.h"
+#include "Materials/Metal.h"
+#include "Materials/Dielectrics.h"
 
 namespace
 {
@@ -78,7 +78,7 @@ int main()
 		const int max_depth = 10; // number of ray bouncing
 		const int sample_per_pixel = 10;
 
-		std::vector<std::shared_ptr<Material>> materials;
+		std::vector<std::shared_ptr<IMaterial>> materials;
 		materials.push_back(std::make_shared<Lambertian>(Vector3D(0.8f, 0.8f, 0.0f)));
 		materials.push_back(std::make_shared<Lambertian>(Vector3D(0.7f, 0.3f, 0.3f)));
 		materials.push_back(std::make_shared<Metal>(Vector3D(0.8f, 0.8f, 0.8f),0.3f));

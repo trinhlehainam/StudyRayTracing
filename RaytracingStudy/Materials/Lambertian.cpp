@@ -1,7 +1,7 @@
 #include "Lambertian.h"
 
-#include "Common/Ray.h"
-#include "HitRecord.h"
+#include "../Common/Ray.h"
+#include "../HitRecord.h"
 
 Lambertian::Lambertian(const Vector3D& albedo):Albedo(albedo)
 {

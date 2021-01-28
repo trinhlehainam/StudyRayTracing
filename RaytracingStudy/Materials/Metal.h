@@ -1,10 +1,10 @@
 #pragma once
-#include "Material.h"
+#include "IMaterial.h"
 
-#include "Common/Vector3D.h"
+#include "../Common/Vector3D.h"
 
 class Metal :
-    public Material
+    public IMaterial
 {
 public:
     explicit Metal(const Vector3D& albedo, float fuzziness);

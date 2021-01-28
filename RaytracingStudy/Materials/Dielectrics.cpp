@@ -2,8 +2,8 @@
 
 #include <cmath>
 
-#include "Common/Ray.h"
-#include "HitRecord.h"
+#include "../Common/Ray.h"
+#include "../HitRecord.h"
 
 Dielectrics::Dielectrics(float refractionIndex):RefractionIndex(refractionIndex)
 {

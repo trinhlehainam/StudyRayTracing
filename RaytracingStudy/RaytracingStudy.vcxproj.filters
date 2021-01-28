@@ -39,13 +39,13 @@
     <ClCompile Include="Common\Vector3D.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Lambertian.cpp">
+    <ClCompile Include="Materials\Dielectrics.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Metal.cpp">
+    <ClCompile Include="Materials\Lambertian.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Dielectrics.cpp">
+    <ClCompile Include="Materials\Metal.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -74,16 +74,16 @@
     <ClInclude Include="Common\Vector3D.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Material.h">
+    <ClInclude Include="Materials\Dielectrics.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Lambertian.h">
+    <ClInclude Include="Materials\Lambertian.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Metal.h">
+    <ClInclude Include="Materials\Metal.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Dielectrics.h">
+    <ClInclude Include="Materials\IMaterial.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

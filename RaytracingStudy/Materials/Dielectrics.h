@@ -1,10 +1,10 @@
 #pragma once
-#include "Material.h"
+#include "IMaterial.h"
 
-#include "Common/Vector3D.h"
+#include "../Common/Vector3D.h"
 
 class Dielectrics :
-    public Material
+    public IMaterial
 {
 public:
     Dielectrics(float refractionIndex);

@@ -4,12 +4,12 @@
 
 #include "HitRecord.h"
 
-Sphere::Sphere(const std::shared_ptr<Material>& material):
+Sphere::Sphere(const std::shared_ptr<IMaterial>& material):
 	Center(0.0f,0.0,-1.0f),Radius(0.5f), pMaterial(material)
 {
 }
 
-Sphere::Sphere(const Vector3D& center, float radius, const std::shared_ptr<Material>& material):
+Sphere::Sphere(const Vector3D& center, float radius, const std::shared_ptr<IMaterial>& material):
 	Center(center),Radius(radius), pMaterial(material)
 {
 }

@@ -1,8 +1,8 @@
 #include "Metal.h"
 
-#include "Common/Ray.h"
-#include "Common/MathHelper.h"
-#include "HitRecord.h"
+#include "../Common/Ray.h"
+#include "../Common/MathHelper.h"
+#include "../HitRecord.h"
 
 Metal::Metal(const Vector3D& albedo, float fuzziness):Albedo(albedo), Fuzziness(MathHelper::Clamp(fuzziness,0.0f,1.0f))
 {

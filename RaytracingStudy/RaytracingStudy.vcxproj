@@ -20,28 +20,28 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Common\Camera.cpp" />
-    <ClCompile Include="Dielectrics.cpp" />
+    <ClCompile Include="Materials\Dielectrics.cpp" />
     <ClCompile Include="HitableList.cpp" />
     <ClCompile Include="HitRecord.cpp" />
-    <ClCompile Include="Lambertian.cpp" />
+    <ClCompile Include="Materials\Lambertian.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Common\MathHelper.cpp" />
     <ClCompile Include="Common\Ray.cpp" />
-    <ClCompile Include="Metal.cpp" />
+    <ClCompile Include="Materials\Metal.cpp" />
     <ClCompile Include="Sphere.cpp" />
     <ClCompile Include="Common\Vector3D.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Common\Camera.h" />
-    <ClInclude Include="Dielectrics.h" />
+    <ClInclude Include="Materials\Dielectrics.h" />
     <ClInclude Include="HitableList.h" />
     <ClInclude Include="HitRecord.h" />
     <ClInclude Include="IHitable.h" />
     <ClInclude Include="Common\MathHelper.h" />
     <ClInclude Include="Common\Ray.h" />
-    <ClInclude Include="Lambertian.h" />
-    <ClInclude Include="Material.h" />
-    <ClInclude Include="Metal.h" />
+    <ClInclude Include="Materials\Lambertian.h" />
+    <ClInclude Include="Materials\IMaterial.h" />
+    <ClInclude Include="Materials\Metal.h" />
     <ClInclude Include="Sphere.h" />
     <ClInclude Include="Common\Vector3D.h" />
   </ItemGroup>

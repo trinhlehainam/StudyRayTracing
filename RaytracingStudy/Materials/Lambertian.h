@@ -1,9 +1,9 @@
 #pragma once
-#include "Material.h"
+#include "IMaterial.h"
 
-#include "Common/Vector3D.h"
+#include "../Common/Vector3D.h"
 
-class Lambertian : public Material
+class Lambertian : public IMaterial
 {
 public:
 	explicit Lambertian(const Vector3D& albedo);
