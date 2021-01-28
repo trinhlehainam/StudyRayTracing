@@ -37,6 +37,7 @@ Vector3D operator / (float scalar, const Vector3D& a);
 Vector3D operator * (const Vector3D& a, const Vector3D& b);
 Vector3D operator - (const Vector3D& a);
 
+float Length(const Vector3D& a);
 float Dot(const Vector3D& a, const Vector3D& b);
 Vector3D Cross(const Vector3D a, const Vector3D& b);
 Vector3D Normalize(const Vector3D a);
@@ -48,6 +49,7 @@ Vector3D RandomUnitVector();
 // Generate random position that facing the same side with normal
 Vector3D RandomPositionInHemisphere(const Vector3D& normal);
 Vector3D ReflectedVector(const Vector3D& i, const Vector3D& n);
+Vector3D RefractedVector(const Vector3D& i, const Vector3D& n, float refractionRatio);
 
 using Position3 = Vector3D;
 using Color3 = Vector3D;

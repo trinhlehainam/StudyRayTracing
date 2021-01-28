@@ -10,6 +10,7 @@
 #include "Sphere.h"
 #include "Lambertian.h"
 #include "Metal.h"
+#include "Dielectrics.h"
 
 namespace
 {
@@ -82,10 +83,11 @@ int main()
 		materials.push_back(std::make_shared<Lambertian>(Vector3D(0.7f, 0.3f, 0.3f)));
 		materials.push_back(std::make_shared<Metal>(Vector3D(0.8f, 0.8f, 0.8f),0.3f));
 		materials.push_back(std::make_shared<Metal>(Vector3D(0.8f, 0.6f, 0.2f),0.5f));
+		materials.push_back(std::make_shared<Dielectrics>(1.5f));
 		
 		std::shared_ptr<HitableList> List = std::make_shared<HitableList>();
 		List->List.push_back(std::make_shared<Sphere>(Vector3D(0.0f, -100.5f, -1.0f), 100.0f, materials[0]));
-		List->List.push_back(std::make_shared<Sphere>(materials[1]));
+		List->List.push_back(std::make_shared<Sphere>(materials[4]));
 		List->List.push_back(std::make_shared<Sphere>(Vector3D(-1.0f, 0.0f, -1.0f), 0.5f, materials[2]));
 		List->List.push_back(std::make_shared<Sphere>(Vector3D(1.0f, 0.0f, -1.0f), 0.5f, materials[3]));
 		

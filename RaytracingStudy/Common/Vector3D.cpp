@@ -135,6 +135,11 @@ Vector3D operator-(const Vector3D& a)
 	return -1.0f*a;
 }
 
+float Length(const Vector3D& a)
+{
+	return a.Length();
+}
+
 float Dot(const Vector3D& a, const Vector3D& b)
 {
 	return a.X * b.X + a.Y * b.Y + a.Z * b.Z;
@@ -193,4 +198,12 @@ Vector3D RandomPositionInHemisphere(const Vector3D& normal)
 Vector3D ReflectedVector(const Vector3D& i, const Vector3D& n)
 {
 	return i - 2.0f * Dot(i, n) * n;
+}
+
+Vector3D RefractedVector(const Vector3D& i, const Vector3D& n, float refractionRatio)
+{
+	float cosTheta = Dot(-i, n);
+	Vector3D perpendicularVector = refractionRatio * (i + cosTheta * n);
+	Vector3D parallelVector = -std::sqrtf(1.0f - Dot(perpendicularVector, perpendicularVector)) * n;
+	return perpendicularVector + parallelVector;
 }
