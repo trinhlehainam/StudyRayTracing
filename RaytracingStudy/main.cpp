@@ -1,5 +1,6 @@
 #include <iostream>
 #include <memory>
+#include <thread>
 
 #include <DxLib.h>
 
@@ -17,7 +18,6 @@ namespace
 	constexpr int screen_width = 800;
 	constexpr int screen_height = 600;
 	constexpr int color_bits = 32;
-	constexpr float aspect_ratio = static_cast<float>(screen_width) / screen_height;
 }
 
 void DrawCaroBackground(int width, int height, int numCaroX, int numCaroY,
@@ -99,13 +99,14 @@ HitableList RandomScene()
 			}
 		}
 	}
-
+	
 	auto material1 = std::make_shared<Dielectrics>(1.5f);
 	world.List.push_back(std::make_shared<Sphere>(Position3(0.0f, 1.0f, 0.0f), 1.0f, material1));
 	auto material2 = std::make_shared<Lambertian>(Color3(0.4f, 0.2f, 0.1f));
 	world.List.push_back(std::make_shared<Sphere>(Position3(-4.0f, 1.0f, 0.0f), 1.0f, material2));
 	auto material3 = std::make_shared<Metal>(Color3(0.7f, 0.6f, 0.5f), 0.0f);
 	world.List.push_back(std::make_shared<Sphere>(Position3(4.0f, 1.0f, 0.0f), 1.0f, material3));
+
 	return world;
 }
 
@@ -117,29 +118,30 @@ int main()
 	SetMainWindowText(_T("Cyberpunk 2077 REEL PARFORMANZ :)"));
 	DxLib_Init();
 
+	constexpr int max_bounce = 5;								// number of ray bouncing
+	constexpr int sample_per_pixel = 5;
+
+	HitableList World = RandomScene();
+
 	const Position3 look_from(13.0f, 2.0f, 3.0f);
 	const Position3 look_at(0.0f, 0.0f, 0.0f);
 	const Vector3D up(0.0f, 1.0f, 0.0f);
-	constexpr float focus_distance = 10.0f;
+	constexpr float aspect_ratio = static_cast<float>(screen_width) / screen_height;
 	constexpr float aperture = 0.1f;
+	constexpr float focus_distance = 10.0f;
 
-	constexpr int max_bounce = 10;								// number of ray bouncing
-	constexpr int sample_per_pixel = 100;
-
-	HitableList World = RandomScene();
+	Camera camera(
+		look_from,
+		look_at,
+		up,
+		20.0f,
+		aspect_ratio,
+		aperture,
+		focus_distance);
 
 	while (!ProcessMessage())
 	{
 		const float FPS = GetFPS();
-
-		Camera camera(
-			look_from,
-			look_at,
-			up,
-			20.0f,
-			aspect_ratio,
-			aperture,
-			focus_distance);
 
 		for (int y = 0; y < screen_height; ++y)
 		{

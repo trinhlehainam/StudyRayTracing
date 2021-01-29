@@ -4,19 +4,15 @@
 
 #include "MathHelper.h"
 
-Camera::Camera():Position(0.0f,0.0f,0.0f),ViewPosition(-1.0f,1.0f,-1.0f),ViewU(2.0f,0.0f,0.0f),
-ViewV(0.0f,-2.0f,0.0f), LenRadius(0.0f) ,U(-1.0f,0.0f,0.0f), V(0.0f,1.0f,0.0f), W(0.0f,0.0f,-1.0f)
-{
-}
-
 Camera::Camera(Position3 lookFrom, Position3 lookAt, Vector3D vectorUp, float FOV, float aspectRatio,
     float aperture, float focusDistance)
     :Position(lookFrom),
+    LenRadius(aperture / 2.0f),
     W(Normalize(lookAt - lookFrom)),
-    U(Normalize(Cross(vectorUp, W))),
-    V(Cross(W, U)),
-    LenRadius(aperture / 2.0f)
+    U((Normalize(Cross(vectorUp, W)))),
+    V((Cross(W, U)))
 {
+    
    /*
    * View port
    */
