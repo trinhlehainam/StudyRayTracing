@@ -31,5 +31,7 @@ Ray Camera::GetRayAtScreenUV(float u, float v) const
     // Map values from XY to UV
     Vector3D offset = random_pos.X * U + random_pos.Y * V;
 
-    return Ray(Position + offset, ViewPosition + u * ViewU + v * ViewV - Position - offset);
+    return Ray(Position + offset,
+        ViewPosition + u * ViewU + v * ViewV - Position - offset,
+        MathHelper::Random<float>(0.0f,1.0f));
 }

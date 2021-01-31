@@ -12,7 +12,8 @@ bool Metal::ScatterRay(const Ray& inRay, const HitRecord& record, Vector3D& atte
 {
     attenuation = Albedo;
     scatteredRay.Origin = record.Position;
+    scatteredRay.Time = inRay.Time;
     scatteredRay.Direction = ReflectedVector(inRay.Direction, record.Normal) + Fuzziness * RandomUnitVector();
-
+    
     return Dot(scatteredRay.Direction, record.Normal) > 0;
 }

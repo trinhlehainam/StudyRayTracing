@@ -1,10 +1,11 @@
 #include "Ray.h"
 
-Ray::Ray()
+Ray::Ray():Time(0.0f)
 {
 }
 
-Ray::Ray(const Vector3D& origin, const Vector3D& direction):Origin(origin), Direction(direction)
+Ray::Ray(const Vector3D& origin, const Vector3D& direction, float time):
+	Origin(origin), Direction(direction), Time(time)
 {
 }
 

@@ -9,6 +9,7 @@
 #include "HitableList.h"
 #include "HitRecord.h"
 #include "Sphere.h"
+#include "MovingSphere.h"
 #include "Materials/Lambertian.h"
 #include "Materials/Metal.h"
 #include "Materials/Dielectrics.h"
@@ -82,7 +83,8 @@ HitableList RandomScene()
 					// diffuse
 					auto albedo = RandomVector(0.0f,1.0f) * RandomVector(0.0f, 1.0f);
 					sphere_material = std::make_shared<Lambertian>(albedo);
-					world.List.push_back(std::make_shared<Sphere>(center, 0.2f, sphere_material));
+					Position3 center2 = center + Vector3D(0.0f, MathHelper::Random<float>(0.0f, 0.5f), 0.0f);
+					world.List.push_back(std::make_shared<MovingSphere>(center, center2, 0.2f, sphere_material));
 				}
 				else if (choose_mat < 0.95) {
 					// metal
@@ -118,18 +120,12 @@ int main()
 	SetMainWindowText(_T("Cyberpunk 2077 REEL PARFORMANZ :)"));
 	DxLib_Init();
 
-	constexpr int max_bounce = 5;								// number of ray bouncing
-	constexpr int sample_per_pixel = 5;
-
-	HitableList World = RandomScene();
-
 	const Position3 look_from(13.0f, 2.0f, 3.0f);
 	const Position3 look_at(0.0f, 0.0f, 0.0f);
 	const Vector3D up(0.0f, 1.0f, 0.0f);
 	constexpr float aspect_ratio = static_cast<float>(screen_width) / screen_height;
 	constexpr float aperture = 0.1f;
 	constexpr float focus_distance = 10.0f;
-
 	Camera camera(
 		look_from,
 		look_at,
@@ -138,6 +134,11 @@ int main()
 		aspect_ratio,
 		aperture,
 		focus_distance);
+
+	constexpr int max_bounce = 5;								
+	constexpr int sample_per_pixel = 50;
+
+	HitableList World = RandomScene();
 
 	while (!ProcessMessage())
 	{

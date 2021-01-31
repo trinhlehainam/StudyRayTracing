@@ -25,6 +25,7 @@ bool Dielectrics::ScatterRay(const Ray& inRay, const HitRecord& record, Vector3D
 {
     attenuation = Vector3D(1.0f,1.0f,1.0f);
     scatteredRay.Origin = record.Position;
+    scatteredRay.Time = inRay.Time;
 
     Vector3D unitInVector = Normalize(inRay.Direction);
     float cos_theta = Dot(-unitInVector, record.Normal);
