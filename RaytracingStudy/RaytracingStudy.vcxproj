@@ -21,7 +21,9 @@
   <ItemGroup>
     <ClCompile Include="AABB.cpp" />
     <ClCompile Include="BVHNode.cpp" />
+    <ClCompile Include="CheckerTexture.cpp" />
     <ClCompile Include="Common\Camera.cpp" />
+    <ClCompile Include="ITexture.cpp" />
     <ClCompile Include="Materials\Dielectrics.cpp" />
     <ClCompile Include="HitableList.cpp" />
     <ClCompile Include="HitRecord.cpp" />
@@ -31,13 +33,16 @@
     <ClCompile Include="Common\Ray.cpp" />
     <ClCompile Include="Materials\Metal.cpp" />
     <ClCompile Include="MovingSphere.cpp" />
+    <ClCompile Include="SolidColor.cpp" />
     <ClCompile Include="Sphere.cpp" />
     <ClCompile Include="Common\Vector3D.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AABB.h" />
     <ClInclude Include="BVHNode.h" />
+    <ClInclude Include="CheckerTexture.h" />
     <ClInclude Include="Common\Camera.h" />
+    <ClInclude Include="ITexture.h" />
     <ClInclude Include="Materials\Dielectrics.h" />
     <ClInclude Include="HitableList.h" />
     <ClInclude Include="HitRecord.h" />
@@ -48,6 +53,7 @@
     <ClInclude Include="Materials\IMaterial.h" />
     <ClInclude Include="Materials\Metal.h" />
     <ClInclude Include="MovingSphere.h" />
+    <ClInclude Include="SolidColor.h" />
     <ClInclude Include="Sphere.h" />
     <ClInclude Include="Common\Vector3D.h" />
   </ItemGroup>
