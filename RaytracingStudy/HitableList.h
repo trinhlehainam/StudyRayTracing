@@ -9,11 +9,13 @@ class HitableList :
 {
 public:
     HitableList();
+    explicit HitableList(std::shared_ptr<IHitable> object);
     ~HitableList();
 
     virtual bool IsHit(const Ray& ray, float minRange, float maxRange, HitRecord& record) const override;
+    virtual bool IsBoundingBox(AABB& output) const;
 
-    std::vector<std::shared_ptr<IHitable>> List;
+    std::vector<std::shared_ptr<IHitable>> Objects;
 
 };
 

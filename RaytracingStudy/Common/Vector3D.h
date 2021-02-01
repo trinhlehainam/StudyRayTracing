@@ -5,12 +5,15 @@ struct Vector3D
 	Vector3D();
 	Vector3D(float x, float y, float z);
 	Vector3D(const Vector3D& other);
+
+	float operator[] (unsigned int index) const;
 	Vector3D& operator = (const Vector3D& other);
 
 	Vector3D& operator += (const Vector3D& other);
 	Vector3D& operator -= (const Vector3D& other);
 	Vector3D& operator *= (float scalar);
 	Vector3D& operator /= (float scalar);
+	
 
 	// make this vector to become unit vector
 	Vector3D& Normalized();

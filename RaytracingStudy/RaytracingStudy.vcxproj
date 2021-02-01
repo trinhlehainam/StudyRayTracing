@@ -19,6 +19,8 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="AABB.cpp" />
+    <ClCompile Include="BVHNode.cpp" />
     <ClCompile Include="Common\Camera.cpp" />
     <ClCompile Include="Materials\Dielectrics.cpp" />
     <ClCompile Include="HitableList.cpp" />
@@ -33,6 +35,8 @@
     <ClCompile Include="Common\Vector3D.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="AABB.h" />
+    <ClInclude Include="BVHNode.h" />
     <ClInclude Include="Common\Camera.h" />
     <ClInclude Include="Materials\Dielectrics.h" />
     <ClInclude Include="HitableList.h" />

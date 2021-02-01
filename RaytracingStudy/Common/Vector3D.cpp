@@ -1,6 +1,7 @@
 #include "Vector3D.h"
 
 #include <cmath>
+#include <cassert>
 
 #include "MathHelper.h"
 
@@ -14,6 +15,11 @@ Vector3D::Vector3D(float x, float y, float z):X(x),Y(y),Z(z)
 
 Vector3D::Vector3D(const Vector3D& other):X(other.X),Y(other.Y),Z(other.Z)
 {
+}
+
+float Vector3D::operator[](unsigned int index) const
+{
+	return reinterpret_cast<const float*>(this)[index];
 }
 
 Vector3D& Vector3D::operator=(const Vector3D& other)

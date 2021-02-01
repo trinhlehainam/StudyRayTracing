@@ -13,6 +13,7 @@ public:
 		const std::shared_ptr<IMaterial>& material);
 
 	virtual bool IsHit(const Ray& ray, float minRange, float maxRange, HitRecord& record) const override;
+	virtual bool IsBoundingBox(AABB& output) const;
 	Position3 GetCenter(float time) const;
 
 	Position3 Center1, Center2;

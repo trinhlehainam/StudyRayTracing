@@ -10,6 +10,7 @@
 #include "HitRecord.h"
 #include "Sphere.h"
 #include "MovingSphere.h"
+#include "BVHNode.h"
 #include "Materials/Lambertian.h"
 #include "Materials/Metal.h"
 #include "Materials/Dielectrics.h"
@@ -71,7 +72,7 @@ HitableList RandomScene()
 {
 	HitableList world;
 	auto ground_material = std::make_shared<Lambertian>(Color3(0.5f, 0.5f, 0.5f));
-	world.List.push_back(std::make_shared<Sphere>(Position3(0.0f, -1000.0f, 0.0f), 1000.0f, ground_material));
+	world.Objects.push_back(std::make_shared<Sphere>(Position3(0.0f, -1000.0f, 0.0f), 1000.0f, ground_material));
 	
 	for (int a = -6; a < 6; ++a) {
 		for (int b = -6; b < 6; ++b) {
@@ -84,32 +85,32 @@ HitableList RandomScene()
 					auto albedo = RandomVector(0.0f,1.0f) * RandomVector(0.0f, 1.0f);
 					sphere_material = std::make_shared<Lambertian>(albedo);
 					Position3 center2 = center + Vector3D(0.0f, MathHelper::Random<float>(0.0f, 0.5f), 0.0f);
-					world.List.push_back(std::make_shared<MovingSphere>(center, center2, 0.2f, sphere_material));
+					world.Objects.push_back(std::make_shared<MovingSphere>(center, center2, 0.2f, sphere_material));
 				}
 				else if (choose_mat < 0.95) {
 					// metal
 					auto albedo = RandomVector(0.5f, 1.0f);
 					auto fuzz = MathHelper::Random<float>(0.0f, 0.5f);
 					sphere_material = std::make_shared<Metal>(albedo, fuzz);
-					world.List.push_back(std::make_shared<Sphere>(center, 0.2f, sphere_material));
+					world.Objects.push_back(std::make_shared<Sphere>(center, 0.2f, sphere_material));
 				}
 				else {
 					// glass
 					sphere_material = std::make_shared<Dielectrics>(1.5f);
-					world.List.push_back(std::make_shared<Sphere>(center, 0.2f, sphere_material));
+					world.Objects.push_back(std::make_shared<Sphere>(center, 0.2f, sphere_material));
 				}
 			}
 		}
 	}
 	
 	auto material1 = std::make_shared<Dielectrics>(1.5f);
-	world.List.push_back(std::make_shared<Sphere>(Position3(0.0f, 1.0f, 0.0f), 1.0f, material1));
+	world.Objects.push_back(std::make_shared<Sphere>(Position3(0.0f, 1.0f, 0.0f), 1.0f, material1));
 	auto material2 = std::make_shared<Lambertian>(Color3(0.4f, 0.2f, 0.1f));
-	world.List.push_back(std::make_shared<Sphere>(Position3(-4.0f, 1.0f, 0.0f), 1.0f, material2));
+	world.Objects.push_back(std::make_shared<Sphere>(Position3(-4.0f, 1.0f, 0.0f), 1.0f, material2));
 	auto material3 = std::make_shared<Metal>(Color3(0.7f, 0.6f, 0.5f), 0.0f);
-	world.List.push_back(std::make_shared<Sphere>(Position3(4.0f, 1.0f, 0.0f), 1.0f, material3));
+	world.Objects.push_back(std::make_shared<Sphere>(Position3(4.0f, 1.0f, 0.0f), 1.0f, material3));
 
-	return world;
+	return HitableList(std::make_shared<BVHNode>(world));
 }
 
 
@@ -142,7 +143,7 @@ int main()
 
 	while (!ProcessMessage())
 	{
-		const float FPS = GetFPS();
+		int time = GetNowCount();
 
 		for (int y = 0; y < screen_height; ++y)
 		{
@@ -166,7 +167,8 @@ int main()
 				DrawPixel(x, y, GetColor(color));
 			}
 		}
-		DxLib::DrawFormatString(10, 10, DxLib::GetColor(0, 0, 0), L"FPS : %f", FPS);
+		float deltaTime = (GetNowCount() - time) / 1000.0f;
+		DxLib::DrawFormatString(10, 10, DxLib::GetColor(0, 0, 0), L"Elapsed time : %f seconds", deltaTime);
 	}
 
 	DxLib_End();

@@ -3,6 +3,7 @@
 #include <cmath>
 
 #include "HitRecord.h"
+#include "AABB.h"
 
 MovingSphere::MovingSphere(const Position3& center1, const Position3& center2, float radius,
     const std::shared_ptr<IMaterial>& material):
@@ -34,6 +35,18 @@ bool MovingSphere::IsHit(const Ray& ray, float minRange, float maxRange, HitReco
 	Vector3D outwardNormal = (record.Position - GetCenter(ray.Time)) / Radius;
 	record.SetFaceNormal(ray, outwardNormal);
 	record.pMaterial = pMaterial;
+
+	return true;
+}
+
+bool MovingSphere::IsBoundingBox(AABB& output) const
+{
+	Vector3D offset = Vector3D(Radius, Radius, Radius);
+
+	AABB a(Center1 - offset, Center1 + offset);
+	AABB b(Center2 - offset, Center2 + offset);
+
+	output = AABB::SurroundingBox(a, b);
 
 	return true;
 }

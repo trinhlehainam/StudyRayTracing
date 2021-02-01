@@ -49,7 +49,6 @@ namespace MathHelper
 	{
 		return static_cast<T>(degrees * PI<T>/180);
 	}
-
 }
 
 

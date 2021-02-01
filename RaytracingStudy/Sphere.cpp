@@ -3,6 +3,7 @@
 #include <cmath>
 
 #include "HitRecord.h"
+#include "AABB.h"
 
 Sphere::Sphere(const std::shared_ptr<IMaterial>& material):
 	Center(0.0f,0.0,-1.0f),Radius(0.5f), pMaterial(material)
@@ -40,4 +41,13 @@ bool Sphere::IsHit(const Ray& ray, float minRange, float maxRange, HitRecord& re
 	record.pMaterial = pMaterial;
 	
     return true;
+}
+
+bool Sphere::IsBoundingBox(AABB& output) const
+{
+	Vector3D offset = Vector3D(Radius, Radius, Radius);
+	output.Min = Center - offset;
+	output.Max = Center + offset;
+
+	return true;
 }

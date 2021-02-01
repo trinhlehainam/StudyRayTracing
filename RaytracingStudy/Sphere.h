@@ -13,6 +13,7 @@ public:
 	explicit Sphere(const Vector3D& center, float radius, const std::shared_ptr<IMaterial>& material);
 
 	virtual bool IsHit(const Ray& ray, float minRange, float maxRange, HitRecord& record) const override;
+	virtual bool IsBoundingBox(AABB& output) const;
 
 	Vector3D Center;
 	float Radius;
