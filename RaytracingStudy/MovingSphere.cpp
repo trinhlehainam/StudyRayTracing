@@ -2,6 +2,7 @@
 
 #include <cmath>
 
+#include "Common/MathHelper.h"
 #include "HitRecord.h"
 #include "AABB.h"
 
@@ -34,6 +35,7 @@ bool MovingSphere::IsHit(const Ray& ray, float minRange, float maxRange, HitReco
 	record.Position = ray.GetPositionFromParameter(root);
 	Vector3D outwardNormal = (record.Position - GetCenter(ray.Time)) / Radius;
 	record.SetFaceNormal(ray, outwardNormal);
+	GetSphereUV(record.Normal, record.U, record.V);
 	record.pMaterial = pMaterial;
 
 	return true;
@@ -49,6 +51,19 @@ bool MovingSphere::IsBoundingBox(AABB& output) const
 	output = AABB::SurroundingBox(a, b);
 
 	return true;
+}
+
+void MovingSphere::GetSphereUV(const Position3& point, float& u, float& v) const
+{
+	// Point is the position in surface of unit sphere
+	// theta is angle from Y = -1 to Y = +1
+	// phi is angle around Y axis start from X =-1 and return to this in one circle
+
+	float theta = std::acosf(-point.Y);
+	float phi = std::atan2f(-point.Z, point.X) + MathHelper::PI<float>;
+
+	u = phi / (2.0f * MathHelper::PI<float>);
+	v = theta / MathHelper::PI<float>;
 }
 
 Position3 MovingSphere::GetCenter(float time) const

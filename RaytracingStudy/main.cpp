@@ -14,6 +14,7 @@
 #include "Materials/Lambertian.h"
 #include "Materials/Metal.h"
 #include "Materials/Dielectrics.h"
+#include "CheckerTexture.h"
 
 namespace
 {
@@ -71,8 +72,10 @@ unsigned int GetColor(const Vector3D& hdrColor)
 HitableList RandomScene()
 {
 	HitableList world;
-	auto ground_material = std::make_shared<Lambertian>(Color3(0.5f, 0.5f, 0.5f));
-	world.Objects.push_back(std::make_shared<Sphere>(Position3(0.0f, -1000.0f, 0.0f), 1000.0f, ground_material));
+	auto checker = std::make_shared<CheckerTexture>(Color3(0.2f, 0.3f, 0.1f), Color3(0.9f, 0.9f, 0.9f));
+	world.Objects.push_back(
+		std::make_shared<Sphere>(Position3(0.0f, -1000.0f, 0.0f), 1000.0f, 
+			std::make_shared<Lambertian>(checker)));
 	
 	for (int a = -6; a < 6; ++a) {
 		for (int b = -6; b < 6; ++b) {
@@ -137,7 +140,7 @@ int main()
 		focus_distance);
 
 	constexpr int max_bounce = 5;								
-	constexpr int sample_per_pixel = 50;
+	constexpr int sample_per_pixel = 5;
 
 	HitableList World = RandomScene();
 
