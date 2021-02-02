@@ -27,7 +27,7 @@ Camera::Camera(Position3 lookFrom, Position3 lookAt, Vector3D vectorUp, float FO
 
 Ray Camera::GetRayAtScreenUV(float u, float v) const
 {
-    Vector3D random_pos = LenRadius * RandomPositionInUnitCircle();
+    Vector3D random_pos = LenRadius * RandomPositionInDisk();
     // Map values from XY to UV
     Vector3D offset = random_pos.X * U + random_pos.Y * V;
 

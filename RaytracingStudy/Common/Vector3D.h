@@ -49,7 +49,7 @@ Vector3D Pow(const Vector3D& a, float scalar);
 Vector3D RandomPositionInUnitSphere();
 Vector3D RandomUnitVector();
 // Random position in unit circle of plane XY
-Vector3D RandomPositionInUnitCircle();
+Vector3D RandomPositionInDisk();
 // Generate random position that facing the same side with normal
 Vector3D RandomPositionInHemisphere(const Vector3D& normal);
 Vector3D ReflectedVector(const Vector3D& i, const Vector3D& n);

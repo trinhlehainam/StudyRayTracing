@@ -26,7 +26,7 @@ namespace
 	constexpr int color_bits = 32;
 }
 
-void DrawCaroBackground(int width, int height, int numCaroX, int numCaroY,
+void DrawCheckerBoard(int width, int height, int numCaroX, int numCaroY,
 	unsigned int color1, unsigned int color2)
 {
 	for (int y = 0; y < screen_height; ++y)
@@ -50,7 +50,7 @@ Color3 RayColor(const Ray& ray, const Color3& background, const HitableList& wor
 
 	// If ray doesn't hit any objects, return background's color
 	HitRecord record;
-	if (!world.IsHit(ray, 0.001f, MathHelper::INFINITY_FLOAT, record))
+	if (!world.IsHit(ray, 0.00001f, MathHelper::INFINITY_FLOAT, record))
 	{
 		return background;
 	}
@@ -68,8 +68,26 @@ Color3 RayColor(const Ray& ray, const Color3& background, const HitableList& wor
 	return light + attenuation * RayColor(scatteredRay, background, world, numBounce - 1);
 }
 
-unsigned int GetColor(const Vector3D& hdrColor)
+unsigned int GetColor(const Color3& hdrColor)
 {
+	int r = static_cast<int>(255.0f * MathHelper::Clamp(hdrColor.X, 0.0f, 1.0f));
+	int g = static_cast<int>(255.0f * MathHelper::Clamp(hdrColor.Y, 0.0f, 1.0f));
+	int b = static_cast<int>(255.0f * MathHelper::Clamp(hdrColor.Z, 0.0f, 1.0f));
+	return DxLib::GetColor(r, g, b);
+}
+
+unsigned int GetColor(Color3& hdrColor, const int& samplesCount)
+{
+	hdrColor.X = hdrColor.X != hdrColor.X ? 0.0f : hdrColor.X;
+	hdrColor.Y = hdrColor.Y != hdrColor.Y ? 0.0f : hdrColor.Y;
+	hdrColor.Z = hdrColor.Z != hdrColor.Z ? 0.0f : hdrColor.Z;
+
+	hdrColor /= static_cast<float>(samplesCount);
+
+	// Gamma correction
+	// Power color by 1/2 -> mean square root of it
+	hdrColor.Pow(0.5f);
+
 	int r = static_cast<int>(255.0f * MathHelper::Clamp(hdrColor.X, 0.0f, 1.0f));
 	int g = static_cast<int>(255.0f * MathHelper::Clamp(hdrColor.Y, 0.0f, 1.0f));
 	int b = static_cast<int>(255.0f * MathHelper::Clamp(hdrColor.Z, 0.0f, 1.0f));
@@ -138,7 +156,7 @@ HitableList LightScene()
 
 	auto light = std::make_shared<DiffuseLight>(Color3(4.0f, 4.0f, 4.0f));
 	world.Objects.push_back(std::make_shared<XY_Rect>(3.0f, 5.0f, 1.0f, 3.0f, -2.0f, light));
-	world.Objects.push_back(std::make_shared<Sphere>(Position3(0.0f, 8.0f, 0.0f), 2.0f, light));
+	world.Objects.push_back(std::make_shared<Sphere>(Position3(0.0f, 7.0f, 0.0f), 2.0f, light));
 
 	return HitableList(std::make_shared<BVHNode>(world));
 }
@@ -151,12 +169,13 @@ HitableList CornellBox()
 	auto white = std::make_shared<Lambertian>(Color3(0.73f, 0.73f, 0.73f));
 	auto green = std::make_shared<Lambertian>(Color3(0.12f, 0.45f, 0.15f));
 	auto light = std::make_shared<DiffuseLight>(Color3(15.0f, 15.0f, 15.0f));
+	auto metal = std::make_shared<Metal>(Color3(0.73f, 0.73f, 0.73f));
 
-	world.Objects.push_back(std::make_shared<YZ_Rect>(0.0f, 555.0f, 0.0f, 555.0f, 555.0f, green));	 // right
-	world.Objects.push_back(std::make_shared<YZ_Rect>(0.0f, 555.0f, 0.0f, 555.0f, 0.0f, red));		 // left
+	world.Objects.push_back(std::make_shared<YZ_Rect>(0.0f, 555.0f, 0.0f, 555.0f, 555.0f, green));	 // left
+	world.Objects.push_back(std::make_shared<YZ_Rect>(0.0f, 555.0f, 0.0f, 555.0f, 0.0f, red));		 // right
 	world.Objects.push_back(std::make_shared<XZ_Rect>(0.0f, 555.0f, 0.0f, 555.0f, 555.0f, white));	 // top
 	world.Objects.push_back(std::make_shared<XZ_Rect>(0.0f, 555.0f, 0.0f, 555.0f, 0.0f, white));	 // bottom
-	world.Objects.push_back(std::make_shared<XY_Rect>(0.0f, 555.0f, 0.0f, 555.0f, 555.0f, white));   // front
+	world.Objects.push_back(std::make_shared<XY_Rect>(0.0f, 555.0f, 0.0f, 555.0f, 555.0f, white));   // back
 
 	world.Objects.push_back(std::make_shared<XZ_Rect>(213.0f, 343.0f, 227.0f, 332.0f, 554.0f, light));
 
@@ -197,7 +216,7 @@ int main()
 	int samples_per_pixel = 5;
 	Color3 text;
 
-	switch (3)
+	switch (2)
 	{
 	case 0:
 		background = { 0.7f,0.8f,1.0f };
@@ -225,7 +244,7 @@ int main()
 		background = { 0.0f,0.0f,0.0f };
 		look_from = { 278.0f, 278.0f, -800.0f };
 		look_at = { 278.0f, 278.0f, 0.0f };
-		max_bounce = 20;
+		max_bounce = 50;
 		samples_per_pixel = 200;
 		fov = 40.0f;
 		text = { 1.0f,1.0f,1.0f };
@@ -269,13 +288,8 @@ int main()
 				
 					color += RayColor(camera.GetRayAtScreenUV(lengthU, lengthV), background, World, max_bounce);
 				}
-				color /= static_cast<float>(samples_per_pixel);
 
-				// Gamma correction
-				// Power color by 1/2 -> mean square root of it
-				color.Pow(0.5f);
-
-				DrawPixel(x, y, GetColor(color));
+				DrawPixel(x, y, GetColor(color, samples_per_pixel));
 			}
 		}
 		float deltaTime = (GetNowCount() - time) / 1000.0f;

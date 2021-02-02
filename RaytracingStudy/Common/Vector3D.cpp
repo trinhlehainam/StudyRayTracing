@@ -195,7 +195,7 @@ Vector3D RandomUnitVector()
 	return Normalize(RandomVector(-1.0f,1.0f));
 }
 
-Vector3D RandomPositionInUnitCircle()
+Vector3D RandomPositionInDisk()
 {
 	Vector3D p(MathHelper::Random<float>(-1.0, 1.0f), MathHelper::Random<float>(-1.0, 1.0f), 0.0f);
 	while (Dot(p, p) >= 1.0f)
