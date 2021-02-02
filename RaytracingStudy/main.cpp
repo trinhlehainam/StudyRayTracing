@@ -144,6 +144,25 @@ HitableList LightScene()
 	return HitableList(std::make_shared<BVHNode>(world));
 }
 
+HitableList CornellBox()
+{
+	HitableList world;
+
+	auto red = std::make_shared<Lambertian>(Color3(0.65f, 0.05f, 0.05f));
+	auto white = std::make_shared<Lambertian>(Color3(0.73f, 0.73f, 0.73f));
+	auto green = std::make_shared<Lambertian>(Color3(0.12f, 0.45f, 0.15f));
+	auto light = std::make_shared<DiffuseLight>(Color3(15.0f, 15.0f, 15.0f));
+
+	world.Objects.push_back(std::make_shared<YZ_Rect>(0.0f, 555.0f, 0.0f, 555.0f, 555.0f, green));	 // right
+	world.Objects.push_back(std::make_shared<YZ_Rect>(0.0f, 555.0f, 0.0f, 555.0f, 0.0f, red));		 // left
+	world.Objects.push_back(std::make_shared<XZ_Rect>(0.0f, 555.0f, 0.0f, 555.0f, 555.0f, white));	 // top
+	world.Objects.push_back(std::make_shared<XZ_Rect>(0.0f, 555.0f, 0.0f, 555.0f, 0.0f, white));	 // bottom
+	world.Objects.push_back(std::make_shared<XY_Rect>(0.0f, 555.0f, 0.0f, 555.0f, 555.0f, white));   // front
+	world.Objects.push_back(std::make_shared<XZ_Rect>(213.0f, 343.0f, 277.0f, 332.0f, 554.0f, light));
+
+	return HitableList(std::make_shared<BVHNode>(world));
+}
+
 int main()
 {
 	ChangeWindowMode(true);
@@ -157,19 +176,21 @@ int main()
 	Position3 look_at;
 	Vector3D up(0.0f, 1.0f, 0.0f);
 	constexpr float aspect_ratio = static_cast<float>(screen_width) / screen_height;
+	float fov = 20.0f;
 	float aperture = 0.0f;
 	float focus_distance = 10.0f;
-	int max_bounce = 5;
-	int sample_per_pixel = 5;
+	int max_bounce = 50;
+	int samples_per_pixel = 5;
 	Color3 text;
 
-	switch (1)
+	switch (2)
 	{
 	case 0:
 		background = { 0.7f,0.8f,1.0f };
 		look_from = { 13.0f, 2.0f, 3.0f };
 		look_at = { 0.0f, 0.0f, 0.0f };
 		aperture = 0.1f;
+		samples_per_pixel = 50;
 		focus_distance = 10.0f;
 		World = RandomScene();
 		text = { 0.0f,0.0f,0.0f };
@@ -180,9 +201,18 @@ int main()
 		look_at = { 0.0f, 2.0f, 0.0f };
 		aperture = 0.1f;
 		focus_distance = 10.0f;
-		sample_per_pixel = 400.0f;
+		samples_per_pixel = 400;
 		text = { 1.0f,1.0f,1.0f };
 		World = LightScene();
+		break;
+	case 2:
+		background = { 0.0f,0.0f,0.0f };
+		look_from = { 278.0f, 278.0f, -800.0f };
+		look_at = { 278.0f, 278.0f, 0.0f };
+		samples_per_pixel = 200;
+		fov = 40.0f;
+		text = { 1.0f,1.0f,1.0f };
+		World = CornellBox();
 		break;
 	}
 
@@ -190,7 +220,7 @@ int main()
 		look_from,
 		look_at,
 		up,
-		20.0f,
+		fov,
 		aspect_ratio,
 		aperture,
 		focus_distance);
@@ -205,14 +235,14 @@ int main()
 			{
 				Vector3D color;
 				// Sampling per pixel
-				for (int s = 0; s < sample_per_pixel; ++s)
+				for (int s = 0; s < samples_per_pixel; ++s)
 				{
 					float lengthU = static_cast<float>(x + MathHelper::Random<float>(-0.5f,0.5f)) / (screen_width - 1);
 					float lengthV = static_cast<float>(y + MathHelper::Random<float>(-0.5f, 0.5f)) / (screen_height - 1);
 				
 					color += RayColor(camera.GetRayAtScreenUV(lengthU, lengthV), background, World, max_bounce);
 				}
-				color /= sample_per_pixel;
+				color /= static_cast<float>(samples_per_pixel);
 
 				// Gamma correction
 				// Power color by 1/2 -> mean square root of it
