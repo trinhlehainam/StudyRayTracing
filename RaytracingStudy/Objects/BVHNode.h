@@ -4,7 +4,7 @@
 #include <memory>
 #include <vector>
 
-#include "AABB.h"
+#include "../AABB.h"
 
 class HitableList;
 

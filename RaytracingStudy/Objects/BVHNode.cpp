@@ -3,9 +3,9 @@
 #include <algorithm>
 #include <cassert>
 
-#include "Common/MathHelper.h"
+#include "../Common/MathHelper.h"
+#include "../HitRecord.h"
 #include "HitableList.h"
-#include "HitRecord.h"
 
 namespace
 {

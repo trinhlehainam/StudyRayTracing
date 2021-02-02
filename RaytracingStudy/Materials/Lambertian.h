@@ -3,7 +3,7 @@
 
 #include <memory>
 
-#include "../ITexture.h"
+#include "../Textures/ITexture.h"
 
 class Lambertian : public IMaterial
 {

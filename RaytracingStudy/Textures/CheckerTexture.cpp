@@ -16,7 +16,7 @@ CheckerTexture::CheckerTexture(std::shared_ptr<ITexture> odd, std::shared_ptr<IT
 
 Color3 CheckerTexture::GetColor(float u, float v, const Position3& pos) const
 {
-    float sines = std::sinf(1.0f * pos.X) * std::sinf(1.0f * pos.Y) * std::sinf(1.0f * pos.Z);
+    float sines = std::sinf(1000.0f * pos.X) * std::sinf(1000.0f * pos.Y) * std::sinf(1000.0f * pos.Z);
 
     return sines < 0.0f ? Odd->GetColor(u,v,pos) : Even->GetColor(u,v,pos);
 }

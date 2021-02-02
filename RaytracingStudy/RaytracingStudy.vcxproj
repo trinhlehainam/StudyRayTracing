@@ -20,41 +20,42 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="AABB.cpp" />
-    <ClCompile Include="BVHNode.cpp" />
-    <ClCompile Include="CheckerTexture.cpp" />
+    <ClCompile Include="Objects\BVHNode.cpp" />
+    <ClCompile Include="Textures\CheckerTexture.cpp" />
     <ClCompile Include="Common\Camera.cpp" />
-    <ClCompile Include="ITexture.cpp" />
+    <ClCompile Include="Textures\ImageTexture.cpp" />
     <ClCompile Include="Materials\Dielectrics.cpp" />
-    <ClCompile Include="HitableList.cpp" />
+    <ClCompile Include="Objects\HitableList.cpp" />
     <ClCompile Include="HitRecord.cpp" />
     <ClCompile Include="Materials\Lambertian.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Common\MathHelper.cpp" />
     <ClCompile Include="Common\Ray.cpp" />
     <ClCompile Include="Materials\Metal.cpp" />
-    <ClCompile Include="MovingSphere.cpp" />
-    <ClCompile Include="SolidColor.cpp" />
-    <ClCompile Include="Sphere.cpp" />
+    <ClCompile Include="Objects\MovingSphere.cpp" />
+    <ClCompile Include="Textures\SolidColor.cpp" />
+    <ClCompile Include="Objects\Sphere.cpp" />
     <ClCompile Include="Common\Vector3D.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AABB.h" />
-    <ClInclude Include="BVHNode.h" />
-    <ClInclude Include="CheckerTexture.h" />
+    <ClInclude Include="Objects\BVHNode.h" />
+    <ClInclude Include="Textures\CheckerTexture.h" />
     <ClInclude Include="Common\Camera.h" />
-    <ClInclude Include="ITexture.h" />
+    <ClInclude Include="Textures\ImageTexture.h" />
+    <ClInclude Include="Textures\ITexture.h" />
     <ClInclude Include="Materials\Dielectrics.h" />
-    <ClInclude Include="HitableList.h" />
+    <ClInclude Include="Objects\HitableList.h" />
     <ClInclude Include="HitRecord.h" />
-    <ClInclude Include="IHitable.h" />
+    <ClInclude Include="Objects\IHitable.h" />
     <ClInclude Include="Common\MathHelper.h" />
     <ClInclude Include="Common\Ray.h" />
     <ClInclude Include="Materials\Lambertian.h" />
     <ClInclude Include="Materials\IMaterial.h" />
     <ClInclude Include="Materials\Metal.h" />
-    <ClInclude Include="MovingSphere.h" />
-    <ClInclude Include="SolidColor.h" />
-    <ClInclude Include="Sphere.h" />
+    <ClInclude Include="Objects\MovingSphere.h" />
+    <ClInclude Include="Textures\SolidColor.h" />
+    <ClInclude Include="Objects\Sphere.h" />
     <ClInclude Include="Common\Vector3D.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">

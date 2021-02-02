@@ -1,24 +1,20 @@
-#include "Sphere.h"
+#include "MovingSphere.h"
 
 #include <cmath>
 
-#include "Common/MathHelper.h"
-#include "HitRecord.h"
-#include "AABB.h"
+#include "../Common/MathHelper.h"
+#include "../HitRecord.h"
+#include "../AABB.h"
 
-Sphere::Sphere(const std::shared_ptr<IMaterial>& material):
-	Center(0.0f,0.0,-1.0f),Radius(0.5f), pMaterial(material)
+MovingSphere::MovingSphere(const Position3& center1, const Position3& center2, float radius,
+    const std::shared_ptr<IMaterial>& material):
+    Center1(center1), Center2(center2), Radius(radius), pMaterial(material)
 {
 }
 
-Sphere::Sphere(const Vector3D& center, float radius, const std::shared_ptr<IMaterial>& material):
-	Center(center),Radius(radius), pMaterial(material)
+bool MovingSphere::IsHit(const Ray& ray, float minRange, float maxRange, HitRecord& record) const
 {
-}
-
-bool Sphere::IsHit(const Ray& ray, float minRange, float maxRange, HitRecord& record) const
-{
-	Vector3D oc = ray.Origin - Center;
+	Vector3D oc = ray.Origin - GetCenter(ray.Time);
 	float a = Dot(ray.Direction, ray.Direction);
 	float b = 2 * Dot(ray.Direction, oc);
 	float c = Dot(oc, oc) - Radius * Radius;
@@ -37,24 +33,27 @@ bool Sphere::IsHit(const Ray& ray, float minRange, float maxRange, HitRecord& re
 
 	record.t = root;
 	record.Position = ray.GetPositionFromParameter(root);
-	Vector3D outwardNormal = (record.Position - Center) / Radius;
+	Vector3D outwardNormal = (record.Position - GetCenter(ray.Time)) / Radius;
 	record.SetFaceNormal(ray, outwardNormal);
 	GetSphereUV(record.Normal, record.U, record.V);
 	record.pMaterial = pMaterial;
-	
-    return true;
-}
-
-bool Sphere::IsBoundingBox(AABB& output) const
-{
-	Vector3D offset = Vector3D(Radius, Radius, Radius);
-	output.Min = Center - offset;
-	output.Max = Center + offset;
 
 	return true;
 }
 
-void Sphere::GetSphereUV(const Position3& point, float& u, float& v) const
+bool MovingSphere::IsBoundingBox(AABB& output) const
+{
+	Vector3D offset = Vector3D(Radius, Radius, Radius);
+
+	AABB a(Center1 - offset, Center1 + offset);
+	AABB b(Center2 - offset, Center2 + offset);
+
+	output = AABB::SurroundingBox(a, b);
+
+	return true;
+}
+
+void MovingSphere::GetSphereUV(const Position3& point, float& u, float& v) const
 {
 	// Point is the position in surface of unit sphere
 	// theta is angle from Y = -1 to Y = +1
@@ -65,4 +64,9 @@ void Sphere::GetSphereUV(const Position3& point, float& u, float& v) const
 
 	u = phi / (2.0f * MathHelper::PI<float>);
 	v = theta / MathHelper::PI<float>;
+}
+
+Position3 MovingSphere::GetCenter(float time) const
+{
+    return (1.0f - time) * Center1 + time * Center2;
 }

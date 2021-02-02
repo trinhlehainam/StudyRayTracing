@@ -1,7 +1,7 @@
 #include "HitableList.h"
 
-#include "HitRecord.h"
-#include "AABB.h"
+#include "../HitRecord.h"
+#include "../AABB.h"
 
 HitableList::HitableList()
 {
