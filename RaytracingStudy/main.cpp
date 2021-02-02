@@ -139,6 +139,7 @@ HitableList LightScene()
 
 	auto light = std::make_shared<DiffuseLight>(Color3(4.0f, 4.0f, 4.0f));
 	world.Objects.push_back(std::make_shared<XY_Rect>(3.0f, 5.0f, 1.0f, 3.0f, -2.0f, light));
+	world.Objects.push_back(std::make_shared<Sphere>(Position3(0.0f, 6.0f, 0.0f), 1.0f, light));
 
 	return HitableList(std::make_shared<BVHNode>(world));
 }
@@ -162,7 +163,7 @@ int main()
 	int sample_per_pixel = 5;
 	Color3 text;
 
-	switch (0)
+	switch (1)
 	{
 	case 0:
 		background = { 0.7f,0.8f,1.0f };
