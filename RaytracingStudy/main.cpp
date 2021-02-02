@@ -50,7 +50,7 @@ Color3 RayColor(const Ray& ray, const Color3& background, const HitableList& wor
 
 	// If ray doesn't hit any objects, return background's color
 	HitRecord record;
-	if (!world.IsHit(ray, 0.001f, MathHelper::INFINITY_FLOAT, record))
+	if (!world.IsHit(ray, 0.0001f, MathHelper::INFINITY_FLOAT, record))
 	{
 		return background;
 	}
@@ -139,7 +139,7 @@ HitableList LightScene()
 
 	auto light = std::make_shared<DiffuseLight>(Color3(4.0f, 4.0f, 4.0f));
 	world.Objects.push_back(std::make_shared<XY_Rect>(3.0f, 5.0f, 1.0f, 3.0f, -2.0f, light));
-	world.Objects.push_back(std::make_shared<Sphere>(Position3(0.0f, 6.0f, 0.0f), 1.0f, light));
+	world.Objects.push_back(std::make_shared<Sphere>(Position3(0.0f, 8.0f, 0.0f), 2.0f, light));
 
 	return HitableList(std::make_shared<BVHNode>(world));
 }
@@ -179,7 +179,7 @@ int main()
 	float fov = 20.0f;
 	float aperture = 0.0f;
 	float focus_distance = 10.0f;
-	int max_bounce = 50;
+	int max_bounce = 10;
 	int samples_per_pixel = 5;
 	Color3 text;
 
@@ -190,6 +190,7 @@ int main()
 		look_from = { 13.0f, 2.0f, 3.0f };
 		look_at = { 0.0f, 0.0f, 0.0f };
 		aperture = 0.1f;
+		max_bounce = 10;
 		samples_per_pixel = 50;
 		focus_distance = 10.0f;
 		World = RandomScene();
@@ -201,6 +202,7 @@ int main()
 		look_at = { 0.0f, 2.0f, 0.0f };
 		aperture = 0.1f;
 		focus_distance = 10.0f;
+		max_bounce = 10;
 		samples_per_pixel = 400;
 		text = { 1.0f,1.0f,1.0f };
 		World = LightScene();
@@ -209,6 +211,7 @@ int main()
 		background = { 0.0f,0.0f,0.0f };
 		look_from = { 278.0f, 278.0f, -800.0f };
 		look_at = { 278.0f, 278.0f, 0.0f };
+		max_bounce = 20;
 		samples_per_pixel = 200;
 		fov = 40.0f;
 		text = { 1.0f,1.0f,1.0f };

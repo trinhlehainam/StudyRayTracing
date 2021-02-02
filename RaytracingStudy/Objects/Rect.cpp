@@ -12,7 +12,7 @@ XY_Rect::XY_Rect(float x0, float x1, float y0, float y1, float k, std::shared_pt
 bool XY_Rect::IsHit(const Ray& ray, float rangeMin, float rangeMax, HitRecord& record) const
 {
     float t = (K - ray.Origin.Z) / ray.Direction.Z;
-    if (t <rangeMin || t > rangeMax) return false;
+    if (t < rangeMin || t > rangeMax) return false;
 
     float x = ray.Origin.X + t * ray.Direction.X;
     float y = ray.Origin.Y + t * ray.Direction.Y;
