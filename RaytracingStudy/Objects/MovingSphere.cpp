@@ -3,6 +3,7 @@
 #include <cmath>
 
 #include "../Common/MathHelper.h"
+#include "../Materials/IMaterial.h"
 #include "../HitRecord.h"
 #include "../AABB.h"
 

@@ -4,7 +4,9 @@
 #include <memory>
 
 #include "../Common/Ray.h"
-#include "../Materials/IMaterial.h"
+
+
+class IMaterial;
 
 class Sphere : public IHitable
 {

@@ -11,9 +11,11 @@
 #include "Objects/Sphere.h"
 #include "Objects/MovingSphere.h"
 #include "Objects/BVHNode.h"
+#include "Objects/Rect.h"
 #include "Materials/Lambertian.h"
 #include "Materials/Metal.h"
 #include "Materials/Dielectrics.h"
+#include "Materials/DiffuseLight.h"
 #include "Textures/CheckerTexture.h"
 #include "Textures/ImageTexture.h"
 
@@ -40,26 +42,31 @@ void DrawCaroBackground(int width, int height, int numCaroX, int numCaroY,
 	}
 }
 
-Vector3D RayColor(const Ray& ray, const HitableList& world, int numRayBounce)
+Color3 RayColor(const Ray& ray, const Color3& background, const HitableList& world, int numRayBounce)
 {
-	// Guard infinite ray bouncing
+	// If ray reach bounce limit, the light in ray is amlost absorded
 	if (numRayBounce <= 0)
-		return Vector3D(0.0f, 0.0f, 0.0f);
+		return Color3(0.0f, 0.0f, 0.0f);
 
+	// If ray doesn't hit any objects, return background's color
 	HitRecord record;
-	if (world.IsHit(ray, 0.001f, MathHelper::INFINITY_FLOAT, record))
+	if (!world.IsHit(ray, 0.001f, MathHelper::INFINITY_FLOAT, record))
 	{
-		Ray scatteredRay;
-		Vector3D attenuation;
-		if (record.pMaterial->ScatterRay(ray, record, attenuation, scatteredRay))
-			return attenuation * RayColor(scatteredRay, world, numRayBounce - 1);
-		return attenuation;
+		return background;
 	}
 
-	auto dir = Normalize(ray.Direction);
-	float t = record.t;
-	t = 0.5f * (dir.Y + 1.0f);
-	return (1.0f - t) * Vector3D(1.0f, 1.0f, 1.0f) + t * Vector3D(0.5f, 0.7f, 1.0f);
+	Color3 light;
+	record.pMaterial->EmitRay(record.U, record.V, record.Normal, light);
+
+	Ray scatteredRay;
+	// reflective of object (how much light will be reflected back when hit an object)
+	Color3 attenuation;
+
+	// If object's material doesn't reflect any light (or absorb all the light)
+	if (!record.pMaterial->ScatterRay(ray, record, attenuation, scatteredRay))
+		return light;
+
+	return light + attenuation * RayColor(scatteredRay, background, world, numRayBounce - 1);
 }
 
 unsigned int GetColor(const Vector3D& hdrColor)
@@ -119,6 +126,23 @@ HitableList RandomScene()
 	return HitableList(std::make_shared<BVHNode>(world));
 }
 
+HitableList LightScene()
+{
+	auto checkerTex = std::make_shared<CheckerTexture>(Color3(0.5f, 0.5f, 0.0f), Color3(1.0f, 1.0f, 1.0f));
+	auto earthTex = std::make_shared<ImageTexture>(L"Resource/Texture/earth.png");
+
+	HitableList world;
+	auto material1 = std::make_shared<Lambertian>(checkerTex);
+	auto material2 = std::make_shared<Lambertian>(earthTex);
+	world.Objects.push_back(std::make_shared<Sphere>(Position3(0.0f, -1000.0f, 0.0f), 1000.0f, material1));
+	world.Objects.push_back(std::make_shared<Sphere>(Position3(0.0f, 2.0f, 0.0f), 2.0f, material2));
+
+	auto light = std::make_shared<DiffuseLight>(Color3(4.0f, 4.0f, 4.0f));
+	world.Objects.push_back(std::make_shared<XY_Rect>(3.0f, 5.0f, 1.0f, 3.0f, -2.0f, light));
+
+	return HitableList(std::make_shared<BVHNode>(world));
+}
+
 int main()
 {
 	ChangeWindowMode(true);
@@ -126,12 +150,41 @@ int main()
 	SetMainWindowText(_T("Cyberpunk 2077 REEL PARFORMANZ :)"));
 	DxLib_Init();
 
-	const Position3 look_from(13.0f, 2.0f, 3.0f);
-	const Position3 look_at(0.0f, 0.0f, 0.0f);
-	const Vector3D up(0.0f, 1.0f, 0.0f);
+	HitableList World;
+	Color3 background;
+	Position3 look_from;
+	Position3 look_at;
+	Vector3D up(0.0f, 1.0f, 0.0f);
 	constexpr float aspect_ratio = static_cast<float>(screen_width) / screen_height;
-	constexpr float aperture = 0.1f;
-	constexpr float focus_distance = 10.0f;
+	float aperture = 0.0f;
+	float focus_distance = 10.0f;
+	int max_bounce = 5;
+	int sample_per_pixel = 5;
+	Color3 text;
+
+	switch (0)
+	{
+	case 0:
+		background = { 0.7f,0.8f,1.0f };
+		look_from = { 13.0f, 2.0f, 3.0f };
+		look_at = { 0.0f, 0.0f, 0.0f };
+		aperture = 0.1f;
+		focus_distance = 10.0f;
+		World = RandomScene();
+		text = { 0.0f,0.0f,0.0f };
+		break;
+	case 1:
+		background = { 0.0f,0.0f,0.0f };
+		look_from = { 26.0f, 3.0f, 6.0f };
+		look_at = { 0.0f, 2.0f, 0.0f };
+		aperture = 0.1f;
+		focus_distance = 10.0f;
+		sample_per_pixel = 400.0f;
+		text = { 1.0f,1.0f,1.0f };
+		World = LightScene();
+		break;
+	}
+
 	Camera camera(
 		look_from,
 		look_at,
@@ -140,11 +193,6 @@ int main()
 		aspect_ratio,
 		aperture,
 		focus_distance);
-
-	constexpr int max_bounce = 5;								
-	constexpr int sample_per_pixel = 50;
-
-	HitableList World = RandomScene();
 
 	while (!ProcessMessage())
 	{
@@ -158,10 +206,10 @@ int main()
 				// Sampling per pixel
 				for (int s = 0; s < sample_per_pixel; ++s)
 				{
-					float lengthU = static_cast<float>(x + MathHelper::Random<float>()) / (screen_width - 1);
-					float lengthV = static_cast<float>(y + MathHelper::Random<float>()) / (screen_height - 1);
+					float lengthU = static_cast<float>(x + MathHelper::Random<float>(-0.5f,0.5f)) / (screen_width - 1);
+					float lengthV = static_cast<float>(y + MathHelper::Random<float>(-0.5f, 0.5f)) / (screen_height - 1);
 				
-					color += RayColor(camera.GetRayAtScreenUV(lengthU, lengthV), World, max_bounce);
+					color += RayColor(camera.GetRayAtScreenUV(lengthU, lengthV), background, World, max_bounce);
 				}
 				color /= sample_per_pixel;
 
@@ -173,7 +221,7 @@ int main()
 			}
 		}
 		float deltaTime = (GetNowCount() - time) / 1000.0f;
-		DxLib::DrawFormatString(10, 10, DxLib::GetColor(0, 0, 0), L"Elapsed time : %f seconds", deltaTime);
+		DxLib::DrawFormatString(10, 10, GetColor(text), L"Elapsed time : %f seconds", deltaTime);
 	}
 
 	DxLib_End();
