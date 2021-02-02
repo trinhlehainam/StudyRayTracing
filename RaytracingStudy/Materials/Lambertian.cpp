@@ -2,7 +2,7 @@
 
 #include "../Common/Ray.h"
 #include "../HitRecord.h"
-#include "../SolidColor.h"
+#include "../Textures/SolidColor.h"
 
 Lambertian::Lambertian(const Color3& albedo):Albedo(std::make_shared<SolidColor>(albedo))
 {

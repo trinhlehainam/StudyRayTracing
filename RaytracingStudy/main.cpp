@@ -6,15 +6,15 @@
 
 #include "Common/MathHelper.h"
 #include "Common/Camera.h"
-#include "HitableList.h"
+#include "Objects/HitableList.h"
 #include "HitRecord.h"
-#include "Sphere.h"
-#include "MovingSphere.h"
-#include "BVHNode.h"
+#include "Objects/Sphere.h"
+#include "Objects/MovingSphere.h"
+#include "Objects/BVHNode.h"
 #include "Materials/Lambertian.h"
 #include "Materials/Metal.h"
 #include "Materials/Dielectrics.h"
-#include "CheckerTexture.h"
+#include "Textures/CheckerTexture.h"
 
 namespace
 {
