@@ -15,6 +15,7 @@
 #include "Materials/Metal.h"
 #include "Materials/Dielectrics.h"
 #include "Textures/CheckerTexture.h"
+#include "Textures/ImageTexture.h"
 
 namespace
 {
@@ -71,11 +72,13 @@ unsigned int GetColor(const Vector3D& hdrColor)
 
 HitableList RandomScene()
 {
+	auto earthTex = std::make_shared<ImageTexture>(L"Resource/Texture/earth.png");
+	auto rockTex = std::make_shared<ImageTexture>(L"Resource/Texture/rock.jpg");
+	auto checkerTex = std::make_shared<CheckerTexture>(Color3(0.2f, 0.3f, 0.1f), Color3(0.9f, 0.9f, 0.9f));
 	HitableList world;
-	auto checker = std::make_shared<CheckerTexture>(Color3(0.2f, 0.3f, 0.1f), Color3(0.9f, 0.9f, 0.9f));
 	world.Objects.push_back(
 		std::make_shared<Sphere>(Position3(0.0f, -1000.0f, 0.0f), 1000.0f, 
-			std::make_shared<Lambertian>(checker)));
+			std::make_shared<Lambertian>(checkerTex)));
 	
 	for (int a = -6; a < 6; ++a) {
 		for (int b = -6; b < 6; ++b) {
@@ -85,10 +88,10 @@ HitableList RandomScene()
 				std::shared_ptr<IMaterial> sphere_material;
 				if (choose_mat < 0.8f) {
 					// diffuse
-					auto albedo = RandomVector(0.0f,1.0f) * RandomVector(0.0f, 1.0f);
+					auto albedo = MathHelper::Random<float>(0.0f,2.0f) > 1.0f ? rockTex : earthTex;
 					sphere_material = std::make_shared<Lambertian>(albedo);
 					Position3 center2 = center + Vector3D(0.0f, MathHelper::Random<float>(0.0f, 0.5f), 0.0f);
-					world.Objects.push_back(std::make_shared<MovingSphere>(center, center2, 0.2f, sphere_material));
+					world.Objects.push_back(std::make_shared<Sphere>(center, 0.2f, sphere_material));
 				}
 				else if (choose_mat < 0.95) {
 					// metal
@@ -108,14 +111,13 @@ HitableList RandomScene()
 	
 	auto material1 = std::make_shared<Dielectrics>(1.5f);
 	world.Objects.push_back(std::make_shared<Sphere>(Position3(0.0f, 1.0f, 0.0f), 1.0f, material1));
-	auto material2 = std::make_shared<Lambertian>(Color3(0.4f, 0.2f, 0.1f));
+	auto material2 = std::make_shared<Lambertian>(earthTex);
 	world.Objects.push_back(std::make_shared<Sphere>(Position3(-4.0f, 1.0f, 0.0f), 1.0f, material2));
 	auto material3 = std::make_shared<Metal>(Color3(0.7f, 0.6f, 0.5f), 0.0f);
 	world.Objects.push_back(std::make_shared<Sphere>(Position3(4.0f, 1.0f, 0.0f), 1.0f, material3));
 
 	return HitableList(std::make_shared<BVHNode>(world));
 }
-
 
 int main()
 {
@@ -140,7 +142,7 @@ int main()
 		focus_distance);
 
 	constexpr int max_bounce = 5;								
-	constexpr int sample_per_pixel = 5;
+	constexpr int sample_per_pixel = 50;
 
 	HitableList World = RandomScene();
 
