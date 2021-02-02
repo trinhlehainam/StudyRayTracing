@@ -16,7 +16,7 @@ bool DiffuseLight::ScatterRay(const Ray& inRay, const HitRecord& record, Vector3
     return false;
 }
 
-bool DiffuseLight::EmitRay(float u, float v, const Position3& pos, Color3& color) const
+bool DiffuseLight::EmittedRay(float u, float v, const Position3& pos, Color3& color) const
 {
     color = Light->GetColor(u, v, pos);
     return true;

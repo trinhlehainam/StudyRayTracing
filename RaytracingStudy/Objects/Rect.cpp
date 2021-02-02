@@ -37,8 +37,6 @@ bool XY_Rect::IsBoundingBox(AABB& output) const
     return true;
 }
 
-
-
 XZ_Rect::XZ_Rect(float x0, float x1, float z0, float z1, float k, std::shared_ptr<IMaterial> mat):
     X0(x0),X1(x1),Z0(z0),Z1(z1),K(k),pMaterial(mat)
 {

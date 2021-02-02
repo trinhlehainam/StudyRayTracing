@@ -192,7 +192,7 @@ Vector3D RandomPositionInUnitSphere()
 
 Vector3D RandomUnitVector()
 {
-	return Normalize(RandomVector(-1,1));
+	return Normalize(RandomVector(-1.0f,1.0f));
 }
 
 Vector3D RandomPositionInUnitCircle()

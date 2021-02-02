@@ -13,6 +13,6 @@ public:
 
 	virtual bool ScatterRay(const Ray& inRay, const HitRecord& record, Vector3D& attenuation, Ray& scatteredRay) const = 0;
 
-	virtual bool EmitRay(float u, float v, const Position3& pos, Color3& color) const { return false; }
+	virtual bool EmittedRay(float u, float v, const Position3& pos, Color3& color) const { return false; }
 };
 

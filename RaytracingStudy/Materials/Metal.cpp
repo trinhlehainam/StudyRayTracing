@@ -4,7 +4,11 @@
 #include "../Common/MathHelper.h"
 #include "../HitRecord.h"
 
-Metal::Metal(const Vector3D& albedo, float fuzziness):Albedo(albedo), Fuzziness(MathHelper::Clamp(fuzziness,0.0f,1.0f))
+Metal::Metal(const Color3& albedo):Albedo(albedo), Fuzziness(0.0f)
+{
+}
+
+Metal::Metal(const Color3& albedo, float fuzziness):Albedo(albedo), Fuzziness(MathHelper::Clamp(fuzziness,0.0f,1.0f))
 {
 }
 

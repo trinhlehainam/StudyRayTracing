@@ -42,31 +42,30 @@ void DrawCaroBackground(int width, int height, int numCaroX, int numCaroY,
 	}
 }
 
-Color3 RayColor(const Ray& ray, const Color3& background, const HitableList& world, int numRayBounce)
+Color3 RayColor(const Ray& ray, const Color3& background, const HitableList& world, int numBounce)
 {
 	// If ray reach bounce limit, the light in ray is amlost absorded
-	if (numRayBounce <= 0)
+	if (numBounce <= 0)
 		return Color3(0.0f, 0.0f, 0.0f);
 
 	// If ray doesn't hit any objects, return background's color
 	HitRecord record;
-	if (!world.IsHit(ray, 0.0001f, MathHelper::INFINITY_FLOAT, record))
+	if (!world.IsHit(ray, 0.001f, MathHelper::INFINITY_FLOAT, record))
 	{
 		return background;
 	}
 
 	Color3 light;
-	record.pMaterial->EmitRay(record.U, record.V, record.Normal, light);
+	record.pMaterial->EmittedRay(record.U, record.V, record.Normal, light);
 
 	Ray scatteredRay;
 	// reflective of object (how much light will be reflected back when hit an object)
 	Color3 attenuation;
-
 	// If object's material doesn't reflect any light (or absorb all the light)
 	if (!record.pMaterial->ScatterRay(ray, record, attenuation, scatteredRay))
 		return light;
 
-	return light + attenuation * RayColor(scatteredRay, background, world, numRayBounce - 1);
+	return light + attenuation * RayColor(scatteredRay, background, world, numBounce - 1);
 }
 
 unsigned int GetColor(const Vector3D& hdrColor)
@@ -158,9 +157,24 @@ HitableList CornellBox()
 	world.Objects.push_back(std::make_shared<XZ_Rect>(0.0f, 555.0f, 0.0f, 555.0f, 555.0f, white));	 // top
 	world.Objects.push_back(std::make_shared<XZ_Rect>(0.0f, 555.0f, 0.0f, 555.0f, 0.0f, white));	 // bottom
 	world.Objects.push_back(std::make_shared<XY_Rect>(0.0f, 555.0f, 0.0f, 555.0f, 555.0f, white));   // front
-	world.Objects.push_back(std::make_shared<XZ_Rect>(213.0f, 343.0f, 277.0f, 332.0f, 554.0f, light));
 
-	return HitableList(std::make_shared<BVHNode>(world));
+	world.Objects.push_back(std::make_shared<XZ_Rect>(213.0f, 343.0f, 227.0f, 332.0f, 554.0f, light));
+
+	return world;
+}
+
+HitableList TestLight()
+{
+	HitableList world;
+
+	auto light = std::make_shared<DiffuseLight>(Color3(15.0f, 15.0f, 15.0f));
+	auto white = std::make_shared<Lambertian>(Color3(0.73f, 0.73f, 0.73f));
+	auto metal = std::make_shared<Metal>(RandomVector(0.5f, 1.0f));
+
+	world.Objects.push_back(std::make_shared<Sphere>(Position3(2.0f, -100.0f, 0.0f), 100.0f, white));
+	world.Objects.push_back(std::make_shared<Sphere>(Position3(0.0f, 4.0f, 0.0f), 1.0f, light));
+
+	return world;
 }
 
 int main()
@@ -183,7 +197,7 @@ int main()
 	int samples_per_pixel = 5;
 	Color3 text;
 
-	switch (2)
+	switch (3)
 	{
 	case 0:
 		background = { 0.7f,0.8f,1.0f };
@@ -216,6 +230,16 @@ int main()
 		fov = 40.0f;
 		text = { 1.0f,1.0f,1.0f };
 		World = CornellBox();
+		break;
+	case 3:
+		background = { 0.0f,0.0f,0.0f };
+		look_from = { 26.0f, 6.0f, 6.0f };
+		look_at = { 0.0f, 2.0f, 0.0f };
+		max_bounce = 10;
+		samples_per_pixel = 200;
+		fov = 20.0f;
+		text = { 1.0f,1.0f,1.0f };
+		World = TestLight();
 		break;
 	}
 
