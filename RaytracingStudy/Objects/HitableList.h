@@ -14,6 +14,7 @@ public:
 
     virtual bool IsHit(const Ray& ray, float minRange, float maxRange, HitRecord& record) const override;
     virtual bool IsBoundingBox(AABB& output) const;
+    void Add(std::shared_ptr<IHitable> object);
 
     std::vector<std::shared_ptr<IHitable>> Objects;
 

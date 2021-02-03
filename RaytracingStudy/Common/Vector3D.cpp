@@ -182,17 +182,17 @@ Vector3D Pow(const Vector3D& a, float scalar)
 
 Vector3D RandomPositionInUnitSphere()
 {
-	Vector3D v;
-	do
+	Vector3D v(RandomVector(-1.0f, 1.0f));
+
+	while (Dot(v, v) >= 1)
 		v = RandomVector(-1.0f, 1.0f);
-	while (Dot(v, v) >= 1);
 
 	return v;
 }
 
 Vector3D RandomUnitVector()
 {
-	return Normalize(RandomVector(-1.0f,1.0f));
+	return Normalize(RandomPositionInUnitSphere());
 }
 
 Vector3D RandomPositionInDisk()

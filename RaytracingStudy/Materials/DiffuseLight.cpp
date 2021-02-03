@@ -1,6 +1,5 @@
 #include "DiffuseLight.h"
 
-#include "../Textures/ITexture.h"
 #include "../Textures/SolidColor.h"
 
 DiffuseLight::DiffuseLight(const Color3& lightColor):Light(std::make_shared<SolidColor>(lightColor))

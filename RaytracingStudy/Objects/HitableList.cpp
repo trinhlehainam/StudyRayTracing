@@ -49,3 +49,8 @@ bool HitableList::IsBoundingBox(AABB& output) const
 
     return true;
 }
+
+void HitableList::Add(std::shared_ptr<IHitable> object)
+{
+    Objects.push_back(std::move(object));
+}

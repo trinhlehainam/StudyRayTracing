@@ -50,7 +50,7 @@ Color3 RayColor(const Ray& ray, const Color3& background, const HitableList& wor
 
 	// If ray doesn't hit any objects, return background's color
 	HitRecord record;
-	if (!world.IsHit(ray, 0.00001f, MathHelper::INFINITY_FLOAT, record))
+	if (!world.IsHit(ray, 0.0001f, MathHelper::INFINITY_FLOAT, record))
 	{
 		return background;
 	}
@@ -161,7 +161,7 @@ HitableList LightScene()
 	return HitableList(std::make_shared<BVHNode>(world));
 }
 
-HitableList CornellBox()
+HitableList CornellBoxScene()
 {
 	HitableList world;
 
@@ -182,16 +182,21 @@ HitableList CornellBox()
 	return world;
 }
 
-HitableList TestLight()
+HitableList TestMaterialsScene()
 {
 	HitableList world;
+	auto ground = std::make_shared<Lambertian>(Color3(0.3f, 0.5f, 0.2f));
+	auto lambertian = std::make_shared<Lambertian>(Color3(0.5f, 0.2f, 0.65f));
+	auto metal = std::make_shared<Metal>(Color3(0.73f, 0.73f, 0.73f));
+	auto dieletrics = std::make_shared<Dielectrics>(1.5f);
+	auto light = std::make_shared<DiffuseLight>(Color3(30.0f, 30.0f, 30.0f));
 
-	auto light = std::make_shared<DiffuseLight>(Color3(15.0f, 15.0f, 15.0f));
-	auto white = std::make_shared<Lambertian>(Color3(0.73f, 0.73f, 0.73f));
-	auto metal = std::make_shared<Metal>(RandomVector(0.5f, 1.0f));
-
-	world.Objects.push_back(std::make_shared<Sphere>(Position3(2.0f, -100.0f, 0.0f), 100.0f, white));
-	world.Objects.push_back(std::make_shared<Sphere>(Position3(0.0f, 4.0f, 0.0f), 1.0f, light));
+	world.Add(std::make_shared<XZ_Rect>(-50.0f, 50.0f, -50.0f, 50.0f, 200.0f, light));
+	world.Add(std::make_shared<XZ_Rect>(-500.0f, 500.0f, -500.0f, 500.0f, 0.0f, lambertian));
+	//world.Add(std::make_shared<Sphere>(Position3(0.0f, -1000.0f, 0.0f), 1000.0f, lambertian));
+	//world.Add(std::make_shared<Sphere>(Position3(0.0f, 0.5f, 0.0f), 0.5f, dieletrics));
+	//world.Add(std::make_shared<Sphere>(Position3(1.0f, 0.5f, 0.0f), 0.5f, metal));
+	//world.Add(std::make_shared<Sphere>(Position3(-1.0f, 0.5f, 0.0f), 0.5f, ground));
 
 	return world;
 }
@@ -216,7 +221,7 @@ int main()
 	int samples_per_pixel = 5;
 	Color3 text;
 
-	switch (2)
+	switch (3)
 	{
 	case 0:
 		background = { 0.7f,0.8f,1.0f };
@@ -248,18 +253,17 @@ int main()
 		samples_per_pixel = 200;
 		fov = 40.0f;
 		text = { 1.0f,1.0f,1.0f };
-		World = CornellBox();
+		World = CornellBoxScene();
 		break;
 	case 3:
-		background = { 0.0f,0.0f,0.0f };
-		look_from = { 26.0f, 6.0f, 6.0f };
-		look_at = { 0.0f, 2.0f, 0.0f };
+		background = { 0.7f,0.8f,1.0f };
+		look_from = { 1000.0f, 250.0f, 0.0f };
+		look_at = { 0.0f, 250.0f, 0.0f };
 		max_bounce = 10;
-		samples_per_pixel = 200;
-		fov = 20.0f;
+		samples_per_pixel = 100;
+		fov = 40.0f;
 		text = { 1.0f,1.0f,1.0f };
-		World = TestLight();
-		break;
+		World = TestMaterialsScene();
 	}
 
 	Camera camera(

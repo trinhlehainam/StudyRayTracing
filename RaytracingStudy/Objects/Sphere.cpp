@@ -21,17 +21,17 @@ bool Sphere::IsHit(const Ray& ray, float minRange, float maxRange, HitRecord& re
 {
 	Vector3D oc = ray.Origin - Center;
 	float a = Dot(ray.Direction, ray.Direction);
-	float b = 2 * Dot(ray.Direction, oc);
+	float b = 2.0f * Dot(ray.Direction, oc);
 	float c = Dot(oc, oc) - Radius * Radius;
-	float d = b * b - 4 * a * c;
+	float d = b * b - 4.0f * a * c;
 
 	if (d < 0) return false;
 
 	float sqrt = std::sqrt(d);
-	float root = (-b - sqrt) / (2 * a);
+	float root = (-b - sqrt) / (2.0f * a);
 	if (root < minRange || root > maxRange)
 	{
-		root = (-b + sqrt) / (2 * a);
+		root = (-b + sqrt) / (2.0f * a);
 		if (root < minRange || root > maxRange)
 			return false;
 	}
