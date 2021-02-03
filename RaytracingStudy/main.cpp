@@ -24,6 +24,25 @@ namespace
 	constexpr int screen_width = 800;
 	constexpr int screen_height = 600;
 	constexpr int color_bits = 32;
+	int select_index = 0;
+	constexpr int num_scene = 4;
+
+	HitableList World;
+	Color3 background;
+	Position3 look_from;
+	Position3 look_at;
+	Vector3D up(0.0f, 1.0f, 0.0f);
+	constexpr float aspect_ratio = static_cast<float>(screen_width) / screen_height;
+	float fov = 20.0f;
+	float aperture = 0.0f;
+	float focus_distance = 10.0f;
+	int max_bounce = 10;
+	int samples_per_pixel = 5;
+	Color3 text;
+	Camera camera;
+
+	using Scene_t = void(*)(void);
+	Scene_t scene;
 }
 
 void DrawCheckerBoard(int width, int height, int numCaroX, int numCaroY,
@@ -193,35 +212,77 @@ HitableList TestMaterialsScene()
 
 	world.Add(std::make_shared<XZ_Rect>(-50.0f, 50.0f, -50.0f, 50.0f, 200.0f, light));
 	world.Add(std::make_shared<XZ_Rect>(-500.0f, 500.0f, -500.0f, 500.0f, 0.0f, lambertian));
-	//world.Add(std::make_shared<Sphere>(Position3(0.0f, -1000.0f, 0.0f), 1000.0f, lambertian));
-	//world.Add(std::make_shared<Sphere>(Position3(0.0f, 0.5f, 0.0f), 0.5f, dieletrics));
-	//world.Add(std::make_shared<Sphere>(Position3(1.0f, 0.5f, 0.0f), 0.5f, metal));
-	//world.Add(std::make_shared<Sphere>(Position3(-1.0f, 0.5f, 0.0f), 0.5f, ground));
+	world.Add(std::make_shared<Sphere>(Position3(0.0f, 50.0f, 0.0f), 50.0f, dieletrics));
+	world.Add(std::make_shared<Sphere>(Position3(0.0f, 50.0f, 100.0f), 50.0f, metal));
+	world.Add(std::make_shared<Sphere>(Position3(0.0f, 50.0f, -100.0f), 50.0f, ground));
 
 	return world;
 }
 
-int main()
+void TitleScene(void);
+void InitScene(void);
+void WaitScene(void);
+void RenderScene(void);
+
+void TitleScene()
 {
-	ChangeWindowMode(true);
-	SetGraphMode(screen_width, screen_height, color_bits);
-	SetMainWindowText(_T("Cyberpunk 2077 REEL PARFORMANZ :)"));
-	DxLib_Init();
+	static char keystates[256] = {};
+	static char oldstates[256] = {};
+	static unsigned int frame = 0;
 
-	HitableList World;
-	Color3 background;
-	Position3 look_from;
-	Position3 look_at;
-	Vector3D up(0.0f, 1.0f, 0.0f);
-	constexpr float aspect_ratio = static_cast<float>(screen_width) / screen_height;
-	float fov = 20.0f;
-	float aperture = 0.0f;
-	float focus_distance = 10.0f;
-	int max_bounce = 10;
-	int samples_per_pixel = 5;
-	Color3 text;
+	for (int i = 0; i < 256; ++i)
+	{
+		oldstates[i] = keystates[i];
+	}
+	DxLib::GetHitKeyStateAll(keystates);
 
-	switch (3)
+	if (keystates[KEY_INPUT_UP] && !oldstates[KEY_INPUT_UP])
+		select_index = (num_scene + select_index - 1) % num_scene;
+	if (keystates[KEY_INPUT_DOWN] && !oldstates[KEY_INPUT_DOWN])
+		select_index = (select_index + 1) % num_scene;
+	if (keystates[KEY_INPUT_RETURN] && !oldstates[KEY_INPUT_RETURN])
+		scene = &WaitScene;
+
+	DxLib::ClearDrawScreen();
+	float offsetY = 100.0f;
+	DxLib::DrawStringF(screen_width / 2.0f - 50.0f, offsetY, L"Select Scene", DxLib::GetColor(200, 200, 255));
+	offsetY += 100.0f;
+	float offsetX = 100.0f;
+	int scene_index = 0;
+	auto color = scene_index == select_index ? DxLib::GetColor(255, 255, 255) : DxLib::GetColor(150, 150, 150);
+	DxLib::DrawStringF(offsetX, offsetY, L"Random Scene : 35 seconds", color);
+	offsetY += 50.0f;
+	++scene_index;
+	color = scene_index == select_index ? DxLib::GetColor(255, 255, 255) : DxLib::GetColor(150, 150, 150);
+	DxLib::DrawStringF(offsetX, offsetY, L"Light Scene : 100 seconds", color);
+	offsetY += 50.0f;
+	++scene_index;
+	color = scene_index == select_index ? DxLib::GetColor(255, 255, 255) : DxLib::GetColor(150, 150, 150);
+	DxLib::DrawStringF(offsetX, offsetY, L"Cornell Box Scene : 100 seconds", color);
+	offsetY += 50.0f;
+	++scene_index;
+	color = scene_index == select_index ? DxLib::GetColor(255, 255, 255) : DxLib::GetColor(150, 150, 150);
+	DxLib::DrawStringF(offsetX, offsetY, L"Test Materials Scene : 14 seconds", color);
+
+	offsetY += 100.0f;
+	if((++frame/3000) % 2 == 0)
+		DxLib::DrawStringF(screen_width / 2.0f - 100.0f, offsetY, L"Press enter to select", DxLib::GetColor(200, 200, 255));
+}
+
+void WaitScene()
+{
+	DxLib::ClearDrawScreen();
+	DxLib::DrawStringF(screen_width / 2.0f - 50.0f, screen_height / 2.0f, L"Please wait!", GetColor(255, 255, 255));
+
+	static int frame = 0;
+
+	if (++frame > 2000)
+		scene = &InitScene;
+}
+
+void InitScene()
+{
+	switch (select_index)
 	{
 	case 0:
 		background = { 0.7f,0.8f,1.0f };
@@ -266,7 +327,7 @@ int main()
 		World = TestMaterialsScene();
 	}
 
-	Camera camera(
+	camera = Camera(
 		look_from,
 		look_at,
 		up,
@@ -275,29 +336,46 @@ int main()
 		aperture,
 		focus_distance);
 
+	scene = &RenderScene;
+}
+
+void RenderScene()
+{
+	int time = GetNowCount();
+
+	for (int y = 0; y < screen_height; ++y)
+	{
+		for (int x = 0; x < screen_width; ++x)
+		{
+			Vector3D color;
+			// Sampling per pixel
+			for (int s = 0; s < samples_per_pixel; ++s)
+			{
+				float lengthU = static_cast<float>(x + MathHelper::Random<float>(-0.5f, 0.5f)) / (screen_width - 1);
+				float lengthV = static_cast<float>(y + MathHelper::Random<float>(-0.5f, 0.5f)) / (screen_height - 1);
+
+				color += RayColor(camera.GetRayAtScreenUV(lengthU, lengthV), background, World, max_bounce);
+			}
+
+			DrawPixel(x, y, GetColor(color, samples_per_pixel));
+		}
+	}
+	float deltaTime = (GetNowCount() - time) / 1000.0f;
+	DxLib::DrawFormatString(10, 10, GetColor(text), L"Elapsed time : %f seconds", deltaTime);
+}
+
+int main()
+{
+	ChangeWindowMode(true);
+	SetGraphMode(screen_width, screen_height, color_bits);
+	SetMainWindowText(_T("1916021_TRINH LE HAI NAM"));
+	DxLib_Init();
+
+	scene = &TitleScene;
+
 	while (!ProcessMessage())
 	{
-		int time = GetNowCount();
-
-		for (int y = 0; y < screen_height; ++y)
-		{
-			for (int x = 0; x < screen_width; ++x)
-			{
-				Vector3D color;
-				// Sampling per pixel
-				for (int s = 0; s < samples_per_pixel; ++s)
-				{
-					float lengthU = static_cast<float>(x + MathHelper::Random<float>(-0.5f,0.5f)) / (screen_width - 1);
-					float lengthV = static_cast<float>(y + MathHelper::Random<float>(-0.5f, 0.5f)) / (screen_height - 1);
-				
-					color += RayColor(camera.GetRayAtScreenUV(lengthU, lengthV), background, World, max_bounce);
-				}
-
-				DrawPixel(x, y, GetColor(color, samples_per_pixel));
-			}
-		}
-		float deltaTime = (GetNowCount() - time) / 1000.0f;
-		DxLib::DrawFormatString(10, 10, GetColor(text), L"Elapsed time : %f seconds", deltaTime);
+		(*scene)();
 	}
 
 	DxLib_End();

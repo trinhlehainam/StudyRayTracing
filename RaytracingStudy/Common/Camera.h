@@ -4,6 +4,7 @@
 class Camera
 {
 public:
+	Camera();
 	explicit Camera(Position3 lookFrom, Position3 lookAt, Vector3D vectorUp, float FOV, float aspectRatio,
 	float aperture, float focusDistance);
 

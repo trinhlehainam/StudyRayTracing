@@ -4,6 +4,10 @@
 
 #include "MathHelper.h"
 
+Camera::Camera():LenRadius(0.0f)
+{
+}
+
 Camera::Camera(Position3 lookFrom, Position3 lookAt, Vector3D vectorUp, float FOV, float aspectRatio,
     float aperture, float focusDistance)
     :Position(lookFrom),
