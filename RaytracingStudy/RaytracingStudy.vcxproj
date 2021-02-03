@@ -20,6 +20,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="AABB.cpp" />
+    <ClCompile Include="Objects\Box.cpp" />
     <ClCompile Include="Materials\DiffuseLight.cpp" />
     <ClCompile Include="Objects\BVHNode.cpp" />
     <ClCompile Include="Objects\Rect.cpp" />
@@ -41,6 +42,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AABB.h" />
+    <ClInclude Include="Objects\Box.h" />
     <ClInclude Include="Materials\DiffuseLight.h" />
     <ClInclude Include="Objects\BVHNode.h" />
     <ClInclude Include="Objects\Rect.h" />
