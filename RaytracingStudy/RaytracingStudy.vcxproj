@@ -24,6 +24,7 @@
     <ClCompile Include="Materials\DiffuseLight.cpp" />
     <ClCompile Include="Objects\BVHNode.cpp" />
     <ClCompile Include="Objects\Rect.cpp" />
+    <ClCompile Include="Transform\RotateY.cpp" />
     <ClCompile Include="Textures\CheckerTexture.cpp" />
     <ClCompile Include="Common\Camera.cpp" />
     <ClCompile Include="Textures\ImageTexture.cpp" />
@@ -47,6 +48,7 @@
     <ClInclude Include="Materials\DiffuseLight.h" />
     <ClInclude Include="Objects\BVHNode.h" />
     <ClInclude Include="Objects\Rect.h" />
+    <ClInclude Include="Transform\RotateY.h" />
     <ClInclude Include="Textures\CheckerTexture.h" />
     <ClInclude Include="Common\Camera.h" />
     <ClInclude Include="Textures\ImageTexture.h" />

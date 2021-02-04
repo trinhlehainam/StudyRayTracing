@@ -14,12 +14,14 @@
 #include "Objects/Rect.h"
 #include "Objects/Box.h"
 #include "Transform/Translate.h"
+#include "Transform/RotateY.h"
 #include "Materials/Lambertian.h"
 #include "Materials/Metal.h"
 #include "Materials/Dielectrics.h"
 #include "Materials/DiffuseLight.h"
 #include "Textures/CheckerTexture.h"
 #include "Textures/ImageTexture.h"
+#include "Textures/SolidColor.h"
 
 namespace
 {
@@ -71,7 +73,7 @@ Color3 RayColor(const Ray& ray, const Color3& background, const HitableList& wor
 
 	// If ray doesn't hit any objects, return background's color
 	HitRecord record;
-	if (!world.IsHit(ray, 0.0001f, MathHelper::INFINITY_FLOAT, record))
+	if (!world.IsHit(ray, 0.001f, MathHelper::INFINITY_FLOAT, record))
 	{
 		return background;
 	}
@@ -117,9 +119,9 @@ unsigned int GetColor(Color3& hdrColor, const int& samplesCount)
 
 HitableList RandomScene()
 {
-	auto earthTex = std::make_shared<ImageTexture>(L"Resource/Texture/earth.png");
-	auto rockTex = std::make_shared<ImageTexture>(L"Resource/Texture/rock.jpg");
-	auto checkerTex = std::make_shared<CheckerTexture>(Color3(0.2f, 0.3f, 0.1f), Color3(0.9f, 0.9f, 0.9f));
+	std::shared_ptr<ITexture> earthTex = std::make_shared<ImageTexture>(L"Resource/Texture/earth.png");
+	std::shared_ptr<ITexture> rockTex = std::make_shared<ImageTexture>(L"Resource/Texture/rock.jpg");
+	std::shared_ptr<ITexture> checkerTex = std::make_shared<CheckerTexture>(Color3(0.2f, 0.3f, 0.1f), Color3(0.9f, 0.9f, 0.9f));
 	HitableList world;
 	world.Objects.push_back(
 		std::make_shared<Sphere>(Position3(0.0f, -1000.0f, 0.0f), 1000.0f, 
@@ -133,7 +135,8 @@ HitableList RandomScene()
 				std::shared_ptr<IMaterial> sphere_material;
 				if (choose_mat < 0.8f) {
 					// diffuse
-					auto albedo = MathHelper::Random<float>(0.0f,2.0f) > 1.0f ? rockTex : earthTex;
+					std::shared_ptr<ITexture> albedo = 
+						std::make_shared<SolidColor>(RandomVector(0.1f, 1.0f));
 					sphere_material = std::make_shared<Lambertian>(albedo);
 					Position3 center2 = center + Vector3D(0.0f, MathHelper::Random<float>(0.0f, 0.5f), 0.0f);
 					world.Objects.push_back(std::make_shared<Sphere>(center, 0.2f, sphere_material));
@@ -198,11 +201,16 @@ HitableList CornellBoxScene()
 	world.Objects.push_back(std::make_shared<XZ_Rect>(0.0f, 555.0f, 0.0f, 555.0f, 0.0f, white));	 // bottom
 	world.Objects.push_back(std::make_shared<XY_Rect>(0.0f, 555.0f, 0.0f, 555.0f, 555.0f, white));   // back
 
-	std::shared_ptr<IHitable> box1 = std::make_shared<Box>(Position3(130.0f, 0.0f, 65.0f), Position3(295.0f, 165.0f, 230.0f), white);
-	box1 = std::make_shared<Translate>(box1, Vector3D(0.0f, 50.0f, 10.0f));
+	std::shared_ptr<IHitable> box1 = 
+		std::make_shared<Box>(Position3(0.0f, 0.0f, 0.0f), Position3(165.0f, 330.0f, 165.0f), white);
+	box1 = std::make_shared<RotateY>(box1, 15.0f);
+	box1 = std::make_shared<Translate>(box1, Vector3D(265.0f, 0.0f, 295.0f));
 	world.Add(box1);
 
-	std::shared_ptr<IHitable> box2 = std::make_shared<Box>(Position3(265.0f, 0.0f, 295.0f), Position3(430.0f, 330.0f, 460.0f), white);
+	std::shared_ptr<IHitable> box2 = 
+		std::make_shared<Box>(Position3(0.0f, 0.0f, 0.0f), Position3(165.0f, 165.0f, 165.0f), white);
+	box2 = std::make_shared<RotateY>(box2, -18.0f);
+	box2 = std::make_shared<Translate>(box2, Vector3D(130.0f, 0.0f, 65.0f));
 	world.Add(box2);
 
 	world.Objects.push_back(std::make_shared<XZ_Rect>(213.0f, 343.0f, 227.0f, 332.0f, 554.0f, light));
@@ -259,7 +267,7 @@ void TitleScene()
 	float offsetX = 100.0f;
 	int scene_index = 0;
 	auto color = scene_index == select_index ? DxLib::GetColor(255, 255, 255) : DxLib::GetColor(150, 150, 150);
-	DxLib::DrawStringF(offsetX, offsetY, L"Random Scene : 35 seconds", color);
+	DxLib::DrawStringF(offsetX, offsetY, L"Random Scene : 36 seconds", color);
 	offsetY += 50.0f;
 	++scene_index;
 	color = scene_index == select_index ? DxLib::GetColor(255, 255, 255) : DxLib::GetColor(150, 150, 150);
@@ -267,11 +275,11 @@ void TitleScene()
 	offsetY += 50.0f;
 	++scene_index;
 	color = scene_index == select_index ? DxLib::GetColor(255, 255, 255) : DxLib::GetColor(150, 150, 150);
-	DxLib::DrawStringF(offsetX, offsetY, L"Cornell Box Scene : 200 seconds", color);
+	DxLib::DrawStringF(offsetX, offsetY, L"Cornell Box Scene : 220 seconds", color);
 	offsetY += 50.0f;
 	++scene_index;
 	color = scene_index == select_index ? DxLib::GetColor(255, 255, 255) : DxLib::GetColor(150, 150, 150);
-	DxLib::DrawStringF(offsetX, offsetY, L"Test Materials Scene : 14 seconds", color);
+	DxLib::DrawStringF(offsetX, offsetY, L"Test Materials Scene : 50 seconds", color);
 
 	offsetY += 100.0f;
 	if((++frame/3000) % 2 == 0)
@@ -281,7 +289,7 @@ void TitleScene()
 void WaitScene()
 {
 	DxLib::ClearDrawScreen();
-	DxLib::DrawStringF(screen_width / 2.0f - 50.0f, screen_height / 2.0f, L"Please wait!", GetColor(255, 255, 255));
+	DxLib::DrawStringF(screen_width / 2.0f - 120.0f, screen_height / 2.0f, L"One thousand years later!", GetColor(255, 255, 255));
 
 	static int frame = 0;
 
@@ -330,7 +338,7 @@ void InitScene()
 		look_from = { 1000.0f, 250.0f, 0.0f };
 		look_at = { 0.0f, 250.0f, 0.0f };
 		max_bounce = 10;
-		samples_per_pixel = 100;
+		samples_per_pixel = 400;
 		fov = 40.0f;
 		text = { 1.0f,1.0f,1.0f };
 		World = TestMaterialsScene();

@@ -25,7 +25,7 @@ bool Sphere::IsHit(const Ray& ray, float minRange, float maxRange, HitRecord& re
 	float c = Dot(oc, oc) - Radius * Radius;
 	float d = b * b - 4.0f * a * c;
 
-	if (d < 0) return false;
+	if (d < 0.0f) return false;
 
 	float sqrt = std::sqrt(d);
 	float root = (-b - sqrt) / (2.0f * a);
