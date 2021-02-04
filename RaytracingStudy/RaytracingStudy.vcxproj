@@ -39,6 +39,7 @@
     <ClCompile Include="Textures\SolidColor.cpp" />
     <ClCompile Include="Objects\Sphere.cpp" />
     <ClCompile Include="Common\Vector3D.cpp" />
+    <ClCompile Include="Transform\Translate.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AABB.h" />
@@ -63,6 +64,7 @@
     <ClInclude Include="Textures\SolidColor.h" />
     <ClInclude Include="Objects\Sphere.h" />
     <ClInclude Include="Common\Vector3D.h" />
+    <ClInclude Include="Transform\Translate.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>

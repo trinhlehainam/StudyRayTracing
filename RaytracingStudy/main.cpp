@@ -13,6 +13,7 @@
 #include "Objects/BVHNode.h"
 #include "Objects/Rect.h"
 #include "Objects/Box.h"
+#include "Transform/Translate.h"
 #include "Materials/Lambertian.h"
 #include "Materials/Metal.h"
 #include "Materials/Dielectrics.h"
@@ -197,8 +198,12 @@ HitableList CornellBoxScene()
 	world.Objects.push_back(std::make_shared<XZ_Rect>(0.0f, 555.0f, 0.0f, 555.0f, 0.0f, white));	 // bottom
 	world.Objects.push_back(std::make_shared<XY_Rect>(0.0f, 555.0f, 0.0f, 555.0f, 555.0f, white));   // back
 
-	world.Add(std::make_shared<Box>(Position3(130.0f, 0.0f, 65.0f), Position3(295.0f, 165.0f, 230.0f), white));
-	world.Add(std::make_shared<Box>(Position3(265.0f, 0.0f, 295.0f), Position3(430.0f, 330.0f, 460.0f), white));
+	std::shared_ptr<IHitable> box1 = std::make_shared<Box>(Position3(130.0f, 0.0f, 65.0f), Position3(295.0f, 165.0f, 230.0f), white);
+	box1 = std::make_shared<Translate>(box1, Vector3D(0.0f, 50.0f, 10.0f));
+	world.Add(box1);
+
+	std::shared_ptr<IHitable> box2 = std::make_shared<Box>(Position3(265.0f, 0.0f, 295.0f), Position3(430.0f, 330.0f, 460.0f), white);
+	world.Add(box2);
 
 	world.Objects.push_back(std::make_shared<XZ_Rect>(213.0f, 343.0f, 227.0f, 332.0f, 554.0f, light));
 
