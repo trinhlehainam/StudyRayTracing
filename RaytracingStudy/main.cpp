@@ -13,12 +13,14 @@
 #include "Objects/BVHNode.h"
 #include "Objects/Rect.h"
 #include "Objects/Box.h"
+#include "Objects/ConstantMedium.h"
 #include "Transform/Translate.h"
 #include "Transform/RotateY.h"
 #include "Materials/Lambertian.h"
 #include "Materials/Metal.h"
 #include "Materials/Dielectrics.h"
 #include "Materials/DiffuseLight.h"
+#include "Materials/Isotropic.h"
 #include "Textures/CheckerTexture.h"
 #include "Textures/ImageTexture.h"
 #include "Textures/SolidColor.h"
@@ -29,7 +31,7 @@ namespace
 	constexpr int screen_height = 600;
 	constexpr int color_bits = 32;
 	int select_index = 0;
-	constexpr int num_scene = 4;
+	constexpr int num_scene = 5;
 
 	HitableList World;
 	Color3 background;
@@ -139,7 +141,7 @@ HitableList RandomScene()
 						std::make_shared<SolidColor>(RandomVector(0.1f, 1.0f));
 					sphere_material = std::make_shared<Lambertian>(albedo);
 					Position3 center2 = center + Vector3D(0.0f, MathHelper::Random<float>(0.0f, 0.5f), 0.0f);
-					world.Objects.push_back(std::make_shared<Sphere>(center, 0.2f, sphere_material));
+					world.Objects.push_back(std::make_shared<MovingSphere>(center, center2, 0.2f, sphere_material));
 				}
 				else if (choose_mat < 0.95) {
 					// metal
@@ -218,6 +220,40 @@ HitableList CornellBoxScene()
 	return world;
 }
 
+HitableList CornellBoxVolumetricScene()
+{
+	HitableList world;
+
+	auto red = std::make_shared<Lambertian>(Color3(0.65f, 0.05f, 0.05f));
+	auto white = std::make_shared<Lambertian>(Color3(0.73f, 0.73f, 0.73f));
+	auto green = std::make_shared<Lambertian>(Color3(0.12f, 0.45f, 0.15f));
+	auto light = std::make_shared<DiffuseLight>(Color3(7.0f, 7.0f, 7.0f));
+	auto metal = std::make_shared<Metal>(Color3(0.73f, 0.73f, 0.73f));
+
+	world.Objects.push_back(std::make_shared<YZ_Rect>(0.0f, 555.0f, 0.0f, 555.0f, 555.0f, green));	 // left
+	world.Objects.push_back(std::make_shared<YZ_Rect>(0.0f, 555.0f, 0.0f, 555.0f, 0.0f, red));		 // right
+	world.Objects.push_back(std::make_shared<XZ_Rect>(0.0f, 555.0f, 0.0f, 555.0f, 555.0f, white));	 // top
+	world.Objects.push_back(std::make_shared<XZ_Rect>(0.0f, 555.0f, 0.0f, 555.0f, 0.0f, white));	 // bottom
+	world.Objects.push_back(std::make_shared<XY_Rect>(0.0f, 555.0f, 0.0f, 555.0f, 555.0f, white));   // back
+
+	std::shared_ptr<IHitable> box1 =
+		std::make_shared<Box>(Position3(0.0f, 0.0f, 0.0f), Position3(165.0f, 330.0f, 165.0f), white);
+	box1 = std::make_shared<RotateY>(box1, 15.0f);
+	box1 = std::make_shared<Translate>(box1, Vector3D(265.0f, 0.0f, 295.0f));
+
+	std::shared_ptr<IHitable> box2 =
+		std::make_shared<Box>(Position3(0.0f, 0.0f, 0.0f), Position3(165.0f, 165.0f, 165.0f), white);
+	box2 = std::make_shared<RotateY>(box2, -18.0f);
+	box2 = std::make_shared<Translate>(box2, Vector3D(130.0f, 0.0f, 65.0f));
+
+	world.Add(std::make_shared<ConstantMedium>(box1, Color3(0.0f, 0.0f, 0.0f), 0.01f));
+	world.Add(std::make_shared<ConstantMedium>(box2, Color3(1.0f, 1.0f, 1.0f), 0.01f));
+
+	world.Objects.push_back(std::make_shared<XZ_Rect>(113.0f, 443.0f, 127.0f, 432.0f, 554.0f, light));
+
+	return world;
+}
+
 HitableList TestMaterialsScene()
 {
 	HitableList world;
@@ -280,6 +316,10 @@ void TitleScene()
 	++scene_index;
 	color = scene_index == select_index ? DxLib::GetColor(255, 255, 255) : DxLib::GetColor(150, 150, 150);
 	DxLib::DrawStringF(offsetX, offsetY, L"Test Materials Scene : 50 seconds", color);
+	offsetY += 50.0f;
+	++scene_index;
+	color = scene_index == select_index ? DxLib::GetColor(255, 255, 255) : DxLib::GetColor(150, 150, 150);
+	DxLib::DrawStringF(offsetX, offsetY, L"Cornell Box Volumetric Scene : 220 seconds", color);
 
 	offsetY += 100.0f;
 	if((++frame/3000) % 2 == 0)
@@ -342,6 +382,16 @@ void InitScene()
 		fov = 40.0f;
 		text = { 1.0f,1.0f,1.0f };
 		World = TestMaterialsScene();
+	case 4:
+		background = { 0.0f,0.0f,0.0f };
+		look_from = { 278.0f, 278.0f, -800.0f };
+		look_at = { 278.0f, 278.0f, 0.0f };
+		max_bounce = 50;
+		samples_per_pixel = 200;
+		fov = 40.0f;
+		text = { 1.0f,1.0f,1.0f };
+		World = CornellBoxVolumetricScene();
+		break;
 	}
 
 	camera = Camera(

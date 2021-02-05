@@ -20,6 +20,8 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="AABB.cpp" />
+    <ClCompile Include="Objects\ConstantMedium.cpp" />
+    <ClCompile Include="Materials\Isotropic.cpp" />
     <ClCompile Include="Objects\Box.cpp" />
     <ClCompile Include="Materials\DiffuseLight.cpp" />
     <ClCompile Include="Objects\BVHNode.cpp" />
@@ -44,6 +46,8 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AABB.h" />
+    <ClInclude Include="Objects\ConstantMedium.h" />
+    <ClInclude Include="Materials\Isotropic.h" />
     <ClInclude Include="Objects\Box.h" />
     <ClInclude Include="Materials\DiffuseLight.h" />
     <ClInclude Include="Objects\BVHNode.h" />
