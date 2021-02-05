@@ -30,8 +30,9 @@ namespace
 	constexpr int screen_width = 800;
 	constexpr int screen_height = 600;
 	constexpr int color_bits = 32;
+
 	int select_index = 0;
-	constexpr int num_scene = 5;
+	constexpr int num_scene = 6;
 
 	HitableList World;
 	Color3 background;
@@ -261,13 +262,104 @@ HitableList TestMaterialsScene()
 	auto lambertian = std::make_shared<Lambertian>(Color3(0.5f, 0.2f, 0.65f));
 	auto metal = std::make_shared<Metal>(Color3(0.73f, 0.73f, 0.73f));
 	auto dieletrics = std::make_shared<Dielectrics>(1.5f);
-	auto light = std::make_shared<DiffuseLight>(Color3(30.0f, 30.0f, 30.0f));
+	auto light = std::make_shared<DiffuseLight>(Color3(30.0f, 30.0f, 0.0f));
 
 	world.Add(std::make_shared<XZ_Rect>(-50.0f, 50.0f, -50.0f, 50.0f, 200.0f, light));
 	world.Add(std::make_shared<XZ_Rect>(-500.0f, 500.0f, -500.0f, 500.0f, 0.0f, lambertian));
 	world.Add(std::make_shared<Sphere>(Position3(0.0f, 50.0f, 0.0f), 50.0f, dieletrics));
 	world.Add(std::make_shared<Sphere>(Position3(0.0f, 50.0f, 100.0f), 50.0f, metal));
 	world.Add(std::make_shared<Sphere>(Position3(0.0f, 50.0f, -100.0f), 50.0f, ground));
+
+	return world;
+}
+
+HitableList FinalScene()
+{
+	HitableList world;
+
+	HitableList boxes;
+	auto ground = std::make_shared<Lambertian>(Color3(1.0f, 1.0f, 1.0f));
+	auto green = std::make_shared<Lambertian>(Color3(0.48f, 0.83f, 0.53f));
+
+	const int boxes_per_side = 20;
+	const float box_width = 100.0f;
+	for(int x = 0; x < boxes_per_side; ++x)
+		for (int z = 0; z < boxes_per_side; ++z)
+		{
+			Position3 Min(-1000.0f + x * box_width, 0.0f, -1000.0f + z * box_width);
+			Position3 Max(Min.X + box_width, MathHelper::Random<float>(0.0f, 100.0f), Min.Z + box_width);
+			auto checker = x % 2 == (z % 2 == 0 ? 0 : 1);
+			auto color = ground;
+			boxes.Add(std::make_shared<Box>(Min, Max, color));
+		}
+	world.Add(std::make_shared<BVHNode>(boxes));
+
+	HitableList planes;
+	auto white = std::make_shared<Lambertian>(Color3(0.73f, 0.73f, 0.73f));
+
+	const int planes_per_side = 7;
+	const float plane_width = 500.0f / planes_per_side;
+
+	for (int x = 0; x < planes_per_side; ++x)
+		for (int z = 0; z < planes_per_side; ++z)
+		{
+			float x0 = plane_width * x;
+			float x1 = x0 + plane_width;
+			float z0 = plane_width * z;
+			float z1 = z0 + plane_width;
+
+			if (x == 0 || x == planes_per_side - 1 || z == 0 || z == planes_per_side - 1)
+			{
+				planes.Add(std::make_shared<XZ_Rect>(x0, x1, z0, z1, 799.0f, white));
+			}
+			else
+			{
+				int checker = z % 2 == 0 ? 1 : 0;
+				if (x % 2 == checker)
+					planes.Add(std::make_shared<XZ_Rect>(x0, x1, z0, z1, 799.0f, white));
+			}
+		}
+	world.Add(std::make_shared<BVHNode>(planes));
+
+	
+	auto top_light = std::make_shared<DiffuseLight>(Color3(0.8f, 0.8f, 8.0f));
+	world.Add(std::make_shared<XZ_Rect>(0.0f, 500.0f, 0.0f, 500.0f, 800.0f, top_light));
+
+	auto left_light = std::make_shared<DiffuseLight>(Color3(5.0f, 5.0f, 0.5f));
+	world.Add(std::make_shared<Sphere>(Position3(800.0f, 200.0f, 200.0f), 100.0f, left_light));
+
+	HitableList balls;
+	auto dielectric = std::make_shared<Dielectrics>(1.5f);
+	balls.Add(std::make_shared<Sphere>(Position3(170.0f, 450.0f, 200.0f), 100.0f, dielectric));
+
+	auto metal = std::make_shared<Metal>(Color3(0.73f, 0.73f, 0.73f));
+	balls.Add(std::make_shared<Sphere>(Position3(170.0f, 200.0f, 200.0f), 100.0f, metal));
+	
+	auto earth = std::make_shared<Lambertian>(std::make_shared<ImageTexture>(L"Resource/Texture/earth.png"));
+	balls.Add(std::make_shared<Sphere>(Position3(320.0f, 250.0f, 450.0f), 150.0f, earth));
+
+	auto movingball = std::make_shared<Lambertian>(Color3(0.73f, 0.3f, 0.73f));
+	balls.Add(std::make_shared<MovingSphere>(Position3(-180.0f, 250.0f, 450.0f), Position3(-180.0f, 350.0f, 450.0f), 120.0f, movingball));
+
+	auto r_light = std::make_shared<DiffuseLight>(Color3(3.0f, 0.5f, 0.5f));
+	auto g_light = std::make_shared<DiffuseLight>(Color3(0.5f, 3.0f, 0.5f));
+	auto b_light = std::make_shared<DiffuseLight>(Color3(0.5f, 0.5f, 3.0f));
+	auto c_light = std::make_shared<DiffuseLight>(Color3(0.0f, 3.0f, 3.0f));
+	auto m_light = std::make_shared<DiffuseLight>(Color3(3.0f, 0.0f, 3.0f));
+	auto y_light = std::make_shared<DiffuseLight>(Color3(3.0f, 3.0f, 0.0f));
+
+	balls.Add(std::make_shared<Sphere>(Position3(300.0f, 470.0f, 350.0f), 25.0f, r_light));
+	balls.Add(std::make_shared<Sphere>(Position3(330.0f, 150.0f, 80.0f), 25.0f, y_light));
+	balls.Add(std::make_shared<Sphere>(Position3(100.0f, 200.0f, 90.0f), 25.0f, b_light));
+	balls.Add(std::make_shared<Sphere>(Position3(290.0f, 320.0f, 85.0f), 25.0f, m_light));
+	balls.Add(std::make_shared<Sphere>(Position3(90.0f, 350.0f, 250.0f), 25.0f, c_light));
+	balls.Add(std::make_shared<Sphere>(Position3(90.0f, 370.0f, -50.0f), 25.0f, g_light));
+	
+
+	world.Add(std::make_shared<BVHNode>(balls));
+
+	auto boundary = std::make_shared<Sphere>(Position3(0.0f, 0.0f, 0.0f), 5000.0f, std::make_shared<Dielectrics>(1.5f));
+	world.Add(std::make_shared<ConstantMedium>(boundary, Color3(1.0f, 1.0f, 1.0f), 0.0001f));
 
 	return world;
 }
@@ -279,9 +371,12 @@ void RenderScene(void);
 
 void TitleScene()
 {
+	static constexpr float offset_y = 50.0f;
+
 	static char keystates[256] = {};
 	static char oldstates[256] = {};
 	static unsigned int frame = 0;
+	
 
 	for (int i = 0; i < 256; ++i)
 	{
@@ -304,22 +399,26 @@ void TitleScene()
 	int scene_index = 0;
 	auto color = scene_index == select_index ? DxLib::GetColor(255, 255, 255) : DxLib::GetColor(150, 150, 150);
 	DxLib::DrawStringF(offsetX, offsetY, L"Random Scene : 36 seconds", color);
-	offsetY += 50.0f;
+	offsetY += offset_y;
 	++scene_index;
 	color = scene_index == select_index ? DxLib::GetColor(255, 255, 255) : DxLib::GetColor(150, 150, 150);
 	DxLib::DrawStringF(offsetX, offsetY, L"Light Scene : 100 seconds", color);
-	offsetY += 50.0f;
+	offsetY += offset_y;
 	++scene_index;
 	color = scene_index == select_index ? DxLib::GetColor(255, 255, 255) : DxLib::GetColor(150, 150, 150);
 	DxLib::DrawStringF(offsetX, offsetY, L"Cornell Box Scene : 220 seconds", color);
-	offsetY += 50.0f;
+	offsetY += offset_y;
 	++scene_index;
 	color = scene_index == select_index ? DxLib::GetColor(255, 255, 255) : DxLib::GetColor(150, 150, 150);
 	DxLib::DrawStringF(offsetX, offsetY, L"Test Materials Scene : 50 seconds", color);
-	offsetY += 50.0f;
+	offsetY += offset_y;
 	++scene_index;
 	color = scene_index == select_index ? DxLib::GetColor(255, 255, 255) : DxLib::GetColor(150, 150, 150);
 	DxLib::DrawStringF(offsetX, offsetY, L"Cornell Box Volumetric Scene : 220 seconds", color);
+	offsetY += offset_y;
+	++scene_index;
+	color = scene_index == select_index ? DxLib::GetColor(255, 255, 255) : DxLib::GetColor(150, 150, 150);
+	DxLib::DrawStringF(offsetX, offsetY, L"Final Scene : 220 seconds", color);
 
 	offsetY += 100.0f;
 	if((++frame/3000) % 2 == 0)
@@ -382,6 +481,7 @@ void InitScene()
 		fov = 40.0f;
 		text = { 1.0f,1.0f,1.0f };
 		World = TestMaterialsScene();
+		break;
 	case 4:
 		background = { 0.0f,0.0f,0.0f };
 		look_from = { 278.0f, 278.0f, -800.0f };
@@ -391,6 +491,16 @@ void InitScene()
 		fov = 40.0f;
 		text = { 1.0f,1.0f,1.0f };
 		World = CornellBoxVolumetricScene();
+		break;
+	case 5:
+		background = { 0.0f,0.0f,0.0f };
+		look_from = { 478.0f, 278.0f, -600.0f };
+		look_at = { 278.0f, 278.0f, 0.0f };
+		max_bounce = 50;
+		samples_per_pixel = 50;
+		fov = 40.0f;
+		text = { 1.0f,1.0f,1.0f };
+		World = FinalScene();
 		break;
 	}
 
@@ -435,7 +545,7 @@ int main()
 {
 	ChangeWindowMode(true);
 	SetGraphMode(screen_width, screen_height, color_bits);
-	SetMainWindowText(_T("1916021_TRINH LE HAI NAM"));
+	SetMainWindowText(_T("A FEW moments later"));
 	DxLib_Init();
 
 	scene = &TitleScene;
