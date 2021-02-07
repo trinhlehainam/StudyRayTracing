@@ -418,7 +418,7 @@ void TitleScene()
 	offsetY += offset_y;
 	++scene_index;
 	color = scene_index == select_index ? DxLib::GetColor(255, 255, 255) : DxLib::GetColor(150, 150, 150);
-	DxLib::DrawStringF(offsetX, offsetY, L"Final Scene : 220 seconds", color);
+	DxLib::DrawStringF(offsetX, offsetY, L"Final Scene : ????????????", color);
 
 	offsetY += 100.0f;
 	if((++frame/3000) % 2 == 0)
@@ -427,8 +427,11 @@ void TitleScene()
 
 void WaitScene()
 {
+	static const wchar_t* wait_text = select_index == num_scene - 1 ? L"Set timer for 4 hours and go to sleep :D" : L"One thousand years later!";
+
+	auto text_length = select_index == num_scene - 1 ? 400 : 240;
 	DxLib::ClearDrawScreen();
-	DxLib::DrawStringF(screen_width / 2.0f - 120.0f, screen_height / 2.0f, L"One thousand years later!", GetColor(255, 255, 255));
+	DxLib::DrawStringF((screen_width - text_length) / 2.0f, screen_height / 2.0f, wait_text, GetColor(255, 255, 255));
 
 	static int frame = 0;
 
@@ -497,7 +500,7 @@ void InitScene()
 		look_from = { 478.0f, 278.0f, -600.0f };
 		look_at = { 278.0f, 278.0f, 0.0f };
 		max_bounce = 50;
-		samples_per_pixel = 50;
+		samples_per_pixel = 10000;
 		fov = 40.0f;
 		text = { 1.0f,1.0f,1.0f };
 		World = FinalScene();
@@ -545,7 +548,7 @@ int main()
 {
 	ChangeWindowMode(true);
 	SetGraphMode(screen_width, screen_height, color_bits);
-	SetMainWindowText(_T("A FEW moments later"));
+	SetMainWindowText(_T("Forever waiting"));
 	DxLib_Init();
 
 	scene = &TitleScene;
