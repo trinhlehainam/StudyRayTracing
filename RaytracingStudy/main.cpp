@@ -368,6 +368,7 @@ void TitleScene(void);
 void InitScene(void);
 void WaitScene(void);
 void RenderScene(void);
+void FinishedScene(void);
 
 void TitleScene()
 {
@@ -435,8 +436,10 @@ void WaitScene()
 
 	static int frame = 0;
 
-	if (++frame > 2000)
+	if (++frame > 2000) {
 		scene = &InitScene;
+		frame = 0;
+	}
 }
 
 void InitScene()
@@ -542,6 +545,13 @@ void RenderScene()
 	}
 	float deltaTime = (GetNowCount() - time) / 1000.0f;
 	DxLib::DrawFormatString(10, 10, GetColor(text), L"Elapsed time : %f seconds", deltaTime);
+	scene = &FinishedScene;
+}
+
+void FinishedScene()
+{
+	if (DxLib::CheckHitKey(KEY_INPUT_ESCAPE))
+		scene = &TitleScene;
 }
 
 int main()
