@@ -543,8 +543,9 @@ void RenderScene()
 			DrawPixel(x, y, GetColor(color, samples_per_pixel));
 		}
 	}
-	float deltaTime = (GetNowCount() - time) / 1000.0f;
-	DxLib::DrawFormatString(10, 10, GetColor(text), L"Elapsed time : %f seconds", deltaTime);
+
+	float elapsedTime = (GetNowCount() - time) / 1000.0f;
+	DxLib::DrawFormatString(10, 10, GetColor(text), L"Elapsed time : %f seconds", elapsedTime);
 	scene = &FinishedScene;
 }
 
